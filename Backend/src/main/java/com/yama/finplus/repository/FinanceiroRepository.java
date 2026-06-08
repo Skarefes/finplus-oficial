@@ -1,4 +1,4 @@
 package com.yama.finplus.repository;
 
-public class FinanceiroRepository {
+public class FinanceiroRepository{
 }
