@@ -20,6 +20,7 @@ Este projeto está sendo desenvolvido para estudos, uso pessoal, prática de des
 - Spring Data JPA
 - Validation
 - Lombok
+- Flyway
 
 ## Frontend
 - JavaScript
