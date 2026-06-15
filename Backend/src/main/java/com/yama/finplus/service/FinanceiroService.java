@@ -15,6 +15,8 @@ public class FinanceiroService {
 
     @Transactional
     public Financeiro gastos(DadosFinanceiro dados) {
-
+        Financeiro financeiro = new Financeiro();
+        financeiroRepository.save(financeiro);
+        return financeiro;
     }
 }

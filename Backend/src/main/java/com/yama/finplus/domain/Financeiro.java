@@ -20,4 +20,7 @@ public class Financeiro {
     private TipoMovimentacao tipo;
     private Categoria categoria;
 
+    public Financeiro() {}
+
+
 }
