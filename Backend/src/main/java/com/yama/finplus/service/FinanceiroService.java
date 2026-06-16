@@ -4,7 +4,9 @@ import com.yama.finplus.domain.DadosFinanceiro;
 import com.yama.finplus.domain.Financeiro;
 import com.yama.finplus.repository.FinanceiroRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
+@Service
 public class FinanceiroService {
 
     private final FinanceiroRepository financeiroRepository;
@@ -15,7 +17,7 @@ public class FinanceiroService {
 
     @Transactional
     public Financeiro gastos(DadosFinanceiro dados) {
-        Financeiro financeiro = new Financeiro();
+        Financeiro financeiro = new Financeiro(dados);
         financeiroRepository.save(financeiro);
         return financeiro;
     }
