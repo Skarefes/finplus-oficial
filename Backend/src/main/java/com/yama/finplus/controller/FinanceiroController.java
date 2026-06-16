@@ -25,7 +25,7 @@ public class FinanceiroController {
 
     @PostMapping("/registrar")
     public ResponseEntity<Financeiro> registrar(@RequestBody @Valid DadosFinanceiro dados) {
-        var financeiro = service.gastos(dados);
+        var financeiro = service.transicao(dados);
         return ResponseEntity.ok(financeiro);
     }
 

@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record DadosFinanceiro(
-        @NotBlank String nome,
-        @NotNull BigDecimal valor,
+        @NotBlank (message = "O nome é obrigatório!") String nome,
+        @NotNull (message = "O valor é obritatório!") BigDecimal valor,
         String descricao,
-        @NotNull TipoMovimentacao tipo
+        @NotNull (message = "O tipo é obrigatório") TipoMovimentacao tipo
 ) {
     public DadosFinanceiro(Financeiro financeiro){
         this(financeiro.getNome(), financeiro.getValor(), financeiro.getDescricao(), financeiro.getTipo());

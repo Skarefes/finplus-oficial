@@ -15,8 +15,9 @@ public class FinanceiroService {
         this.financeiroRepository = financeiroRepository;
     }
 
+    //Função para colocar as transicoes de gastos e ganhos
     @Transactional
-    public Financeiro gastos(DadosFinanceiro dados) {
+    public Financeiro transicao(DadosFinanceiro dados) {
         Financeiro financeiro = new Financeiro(dados);
         financeiroRepository.save(financeiro);
         return financeiro;
