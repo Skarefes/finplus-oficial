@@ -3,9 +3,12 @@ package com.yama.finplus.service;
 import com.yama.finplus.domain.DadosCadastroFinanceiro;
 import com.yama.finplus.domain.DadosDetalhamentoFinanceiro;
 import com.yama.finplus.domain.Financeiro;
+import com.yama.finplus.domain.enums.TipoMovimentacao;
 import com.yama.finplus.repository.FinanceiroRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FinanceiroService {
@@ -18,13 +21,21 @@ public class FinanceiroService {
 
     //Função para colocar as transicoes de gastos e ganhos
     @Transactional
-    public DadosDetalhamentoFinanceiro transicao(DadosCadastroFinanceiro dados) {
+    public DadosDetalhamentoFinanceiro registrar(DadosCadastroFinanceiro dados) {
         var financeiro = new Financeiro(dados);
         financeiroRepository.save(financeiro);
         return new DadosDetalhamentoFinanceiro(financeiro);
     }
 
     //Função para pegar todos os dados
+    public List<DadosDetalhamentoFinanceiro> listarTudo() {
+        return financeiroRepository.findAll().stream()
+                .map(DadosDetalhamentoFinanceiro::new).toList();
+    }
 
-
+    //Função que vai pegar a lista de um tipo que o usuario precisar
+    public List<DadosDetalhamentoFinanceiro> listarPorTipo(TipoMovimentacao tipo) {
+        return financeiroRepository.findByTipo(tipo).stream()
+                .map(DadosDetalhamentoFinanceiro::new).toList();
+    }
 }
