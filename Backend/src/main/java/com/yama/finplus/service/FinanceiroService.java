@@ -1,6 +1,7 @@
 package com.yama.finplus.service;
 
-import com.yama.finplus.domain.DadosFinanceiro;
+import com.yama.finplus.domain.DadosCadastroFinanceiro;
+import com.yama.finplus.domain.DadosDetalhamentoFinanceiro;
 import com.yama.finplus.domain.Financeiro;
 import com.yama.finplus.repository.FinanceiroRepository;
 import jakarta.transaction.Transactional;
@@ -17,9 +18,13 @@ public class FinanceiroService {
 
     //Função para colocar as transicoes de gastos e ganhos
     @Transactional
-    public Financeiro transicao(DadosFinanceiro dados) {
-        Financeiro financeiro = new Financeiro(dados);
+    public DadosDetalhamentoFinanceiro transicao(DadosCadastroFinanceiro dados) {
+        var financeiro = new Financeiro(dados);
         financeiroRepository.save(financeiro);
-        return financeiro;
+        return new DadosDetalhamentoFinanceiro(financeiro);
     }
+
+    //Função para pegar todos os dados
+
+
 }

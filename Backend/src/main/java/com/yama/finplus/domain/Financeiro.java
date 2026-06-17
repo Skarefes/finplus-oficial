@@ -3,13 +3,11 @@ package com.yama.finplus.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yama.finplus.domain.enums.Categoria;
 import com.yama.finplus.domain.enums.TipoMovimentacao;
-import com.yama.finplus.service.FinanceiroService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,7 +29,7 @@ public class Financeiro {
 
     public Financeiro() {}
 
-    public Financeiro(DadosFinanceiro dados){
+    public Financeiro(DadosCadastroFinanceiro dados){
         this.data = LocalDateTime.now();
         this.nome = dados.nome();
         this.valor = dados.valor();

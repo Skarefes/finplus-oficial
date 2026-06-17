@@ -1,18 +1,13 @@
 package com.yama.finplus.controller;
 
-import com.yama.finplus.domain.DadosFinanceiro;
-import com.yama.finplus.domain.Financeiro;
+import com.yama.finplus.domain.DadosCadastroFinanceiro;
+import com.yama.finplus.domain.DadosDetalhamentoFinanceiro;
 import com.yama.finplus.service.FinanceiroService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 public class FinanceiroController {
@@ -24,9 +19,10 @@ public class FinanceiroController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<Financeiro> registrar(@RequestBody @Valid DadosFinanceiro dados) {
-        var financeiro = service.transicao(dados);
-        return ResponseEntity.ok(financeiro);
+    public ResponseEntity<DadosDetalhamentoFinanceiro> registrar(
+            @RequestBody @Valid DadosCadastroFinanceiro dados) {
+        var detalhamento = service.transicao(dados);
+        return ResponseEntity.ok(detalhamento);
     }
 
 }
