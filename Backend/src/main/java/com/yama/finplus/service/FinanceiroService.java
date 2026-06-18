@@ -33,7 +33,7 @@ public class FinanceiroService {
                 .map(DadosDetalhamentoFinanceiro::new).toList();
     }
 
-    //Função que vai pegar a lista de um tipo que o usuario precisar
+    //Função que vai filtrar a lista do tipo e enviar conforme requisitado pelo URL
     public List<DadosDetalhamentoFinanceiro> listarPorTipo(TipoMovimentacao tipo) {
         return financeiroRepository.findByTipo(tipo).stream()
                 .map(DadosDetalhamentoFinanceiro::new).toList();

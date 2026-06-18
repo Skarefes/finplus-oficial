@@ -33,7 +33,7 @@ public class FinanceiroController {
         return ResponseEntity.ok(dados);
     }
 
-    @GetMapping("/tipo")
+    @GetMapping("/filtro")
     public ResponseEntity<List<DadosDetalhamentoFinanceiro>> listarPorTipo(@RequestParam TipoMovimentacao tipo) {
         var tipos = service.listarPorTipo(tipo);
         return ResponseEntity.ok(tipos);
