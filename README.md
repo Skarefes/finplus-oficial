@@ -15,10 +15,10 @@ Este projeto está sendo desenvolvido para estudos, uso pessoal, prática de des
 ## Backend
 - Java
 - Spring Boot
-- Maven
 - Spring Web
 - Spring Data JPA
 - Validation
+- Maven
 - Lombok
 - Flyway
 
@@ -27,12 +27,25 @@ Este projeto está sendo desenvolvido para estudos, uso pessoal, prática de des
 - Angular
 
 ## Banco de Dados
-- PostgreSQL *(em análise)*
+- PostgreSQL
+
+## Funcionalidades implementadas
+✔ Cadastro de receitas e despesas
+✔ Persistência de dados com PostgreSQL
+✔ Arquitetura em camadas (Controller, Service e Repository)
+✔ Uso de DTOs para entrada e saída de dados
+✔ Validação de campos obrigatórios
+✔ Tratamento global de exceções
+✔ Consultas personalizadas com Spring Data JPA
+✔ Conversão de entidades para DTOs
+✔ Suporte a categorias e tipos de movimentação
+✔ Formatação de datas com Java Time API
+✔ API REST utilizando Spring Boot
+✔ Transações com @Transactional
 
 ## Futuras Implementações
 - JWT Authentication
-- Flyway
-- Controle de usuários
 - Dashboard financeiro
 - Relatórios
+- Documentação
 - Integração entre frontend e backend
