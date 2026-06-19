@@ -21,6 +21,7 @@ Este projeto está sendo desenvolvido para estudos, uso pessoal, prática de des
 - Maven
 - Lombok
 - Flyway
+- Postman
 
 ## Frontend
 - JavaScript
@@ -42,6 +43,7 @@ Este projeto está sendo desenvolvido para estudos, uso pessoal, prática de des
 ✔ Formatação de datas com Java Time API
 ✔ API REST utilizando Spring Boot
 ✔ Transações com @Transactional
+✔ Testes com Postman
 
 ## Futuras Implementações
 - JWT Authentication
