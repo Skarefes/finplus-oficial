@@ -1,5 +1,6 @@
 package com.yama.finplus.controller;
 
+import com.yama.finplus.domain.DadosAtualizacaoFinanceiro;
 import com.yama.finplus.domain.DadosCadastroFinanceiro;
 import com.yama.finplus.domain.DadosDetalhamentoFinanceiro;
 import com.yama.finplus.domain.enums.TipoMovimentacao;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/financeiro")
 @RestController
 public class FinanceiroController {
 
@@ -37,5 +39,11 @@ public class FinanceiroController {
     public ResponseEntity<List<DadosDetalhamentoFinanceiro>> listarPorTipo(@RequestParam TipoMovimentacao tipo) {
         var tipos = service.listarPorTipo(tipo);
         return ResponseEntity.ok(tipos);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DadosDetalhamentoFinanceiro> atualizarDados(@PathVariable Long id, @Valid @RequestBody DadosAtualizacaoFinanceiro dados) {
+        var editar = service.editarDados(id, dados);
+        return ResponseEntity.ok(editar);
     }
 }

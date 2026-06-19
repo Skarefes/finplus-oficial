@@ -37,4 +37,21 @@ public class Financeiro {
         this.tipo = dados.tipo();
     }
 
+    public void atualizarDados(DadosAtualizacaoFinanceiro dados) {
+        if(dados.nome() != null){
+            this.nome = dados.nome();
+        }
+        if (dados.valor() != null){
+            this.valor = dados.valor();
+        }
+        if (dados.descricao() != null){
+            this.descricao = dados.descricao();
+        }
+        if (dados.data() != null){
+            this.data = dados.data();
+        }
+        if (dados.tipo() != null){
+            this.tipo = dados.tipo();
+        }
+    }
 }

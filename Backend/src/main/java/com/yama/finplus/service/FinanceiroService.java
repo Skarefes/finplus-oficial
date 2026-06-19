@@ -1,5 +1,6 @@
 package com.yama.finplus.service;
 
+import com.yama.finplus.domain.DadosAtualizacaoFinanceiro;
 import com.yama.finplus.domain.DadosCadastroFinanceiro;
 import com.yama.finplus.domain.DadosDetalhamentoFinanceiro;
 import com.yama.finplus.domain.Financeiro;
@@ -33,9 +34,19 @@ public class FinanceiroService {
                 .map(DadosDetalhamentoFinanceiro::new).toList();
     }
 
-    //Função que vai filtrar a lista do tipo e enviar conforme requisitado pelo URL
+    //Função para filtrar a lista do tipo e enviar conforme requisitado pelo URL
     public List<DadosDetalhamentoFinanceiro> listarPorTipo(TipoMovimentacao tipo) {
         return financeiroRepository.findByTipo(tipo).stream()
                 .map(DadosDetalhamentoFinanceiro::new).toList();
+    }
+
+    @Transactional
+    //Função para editar um item
+    public DadosDetalhamentoFinanceiro editarDados(Long id, DadosAtualizacaoFinanceiro dados) {
+        //identificador fincaneiro ele pega o repository do Financeiro que ja é o objeto pra poder editar
+        var identificadorFinanceiro = financeiroRepository.findById(id).orElseThrow();
+        identificadorFinanceiro.atualizarDados(dados);
+        //retorna um novo DTO com os novos dados
+        return  new DadosDetalhamentoFinanceiro(identificadorFinanceiro);
     }
 }
