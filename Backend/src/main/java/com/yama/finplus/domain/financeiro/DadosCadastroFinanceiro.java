@@ -1,4 +1,4 @@
-package com.yama.finplus.domain;
+package com.yama.finplus.domain.financeiro;
 
 import com.yama.finplus.domain.enums.TipoMovimentacao;
 import jakarta.validation.constraints.NotBlank;

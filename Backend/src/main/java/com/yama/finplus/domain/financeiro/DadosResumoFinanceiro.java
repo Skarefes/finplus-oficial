@@ -1,4 +1,4 @@
-package com.yama.finplus.domain;
+package com.yama.finplus.domain.financeiro;
 
 import java.math.BigDecimal;
 

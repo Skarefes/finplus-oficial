@@ -1,6 +1,5 @@
-package com.yama.finplus.service;
+package com.yama.finplus.domain.financeiro;
 
-import com.yama.finplus.domain.*;
 import com.yama.finplus.domain.enums.TipoMovimentacao;
 import com.yama.finplus.repository.FinanceiroRepository;
 import jakarta.transaction.Transactional;
@@ -54,7 +53,7 @@ public class FinanceiroService {
         financeiroRepository.deleteById(id);
     }
 
-    //Função que vai somar as receitas e despesas
+    //Função que vai somar as receitas e despesas totais
     public DadosResumoFinanceiro somaTipos() {
         BigDecimal receitas = Optional.ofNullable(financeiroRepository
                 .findByTipoAndSumTipo(TipoMovimentacao.RECEITA)).orElse(BigDecimal.ZERO);

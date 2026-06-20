@@ -1,7 +1,7 @@
 package com.yama.finplus.repository;
 
-import com.yama.finplus.domain.Financeiro;
 import com.yama.finplus.domain.enums.TipoMovimentacao;
+import com.yama.finplus.domain.financeiro.Financeiro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

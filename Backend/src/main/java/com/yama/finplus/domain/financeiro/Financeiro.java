@@ -1,4 +1,4 @@
-package com.yama.finplus.domain;
+package com.yama.finplus.domain.financeiro;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yama.finplus.domain.enums.Categoria;

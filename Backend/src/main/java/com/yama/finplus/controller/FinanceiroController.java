@@ -1,11 +1,11 @@
 package com.yama.finplus.controller;
 
-import com.yama.finplus.domain.DadosAtualizacaoFinanceiro;
-import com.yama.finplus.domain.DadosCadastroFinanceiro;
-import com.yama.finplus.domain.DadosDetalhamentoFinanceiro;
-import com.yama.finplus.domain.DadosResumoFinanceiro;
+import com.yama.finplus.domain.financeiro.DadosAtualizacaoFinanceiro;
+import com.yama.finplus.domain.financeiro.DadosCadastroFinanceiro;
+import com.yama.finplus.domain.financeiro.DadosDetalhamentoFinanceiro;
+import com.yama.finplus.domain.financeiro.DadosResumoFinanceiro;
 import com.yama.finplus.domain.enums.TipoMovimentacao;
-import com.yama.finplus.service.FinanceiroService;
+import com.yama.finplus.domain.financeiro.FinanceiroService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
