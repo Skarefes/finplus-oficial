@@ -1,4 +1,4 @@
-package com.yama.finplus.domain.enums;
+package com.yama.finplus.domain.financeiro.enums;
 
 public enum Categoria {
     ALIMENTO,

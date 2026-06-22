@@ -1,7 +1,7 @@
 package com.yama.finplus.domain.financeiro;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.yama.finplus.domain.enums.TipoMovimentacao;
+import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

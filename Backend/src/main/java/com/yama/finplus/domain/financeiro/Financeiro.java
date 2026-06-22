@@ -1,14 +1,18 @@
 package com.yama.finplus.domain.financeiro;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.yama.finplus.domain.enums.Categoria;
-import com.yama.finplus.domain.enums.TipoMovimentacao;
+import com.yama.finplus.domain.cartao.Cartao;
+import com.yama.finplus.domain.cartao.Parcela;
+import com.yama.finplus.domain.financeiro.enums.Categoria;
+import com.yama.finplus.domain.financeiro.enums.FormaPagamento;
+import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "financeiro")
@@ -26,6 +30,13 @@ public class Financeiro {
     private TipoMovimentacao tipo;
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
+    @Enumerated(EnumType.STRING)
+    private FormaPagamento formaPagamento;
+    @ManyToOne
+    private Cartao cartao;
+    //O relacionamento já é controlado pelo atributo financeiro que existe dentro de Parcelas
+    @OneToMany(mappedBy = "financeiro")
+    private List<Parcela> parcelas;
 
     public Financeiro() {}
 

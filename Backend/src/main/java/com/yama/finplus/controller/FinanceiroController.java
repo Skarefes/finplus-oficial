@@ -4,7 +4,7 @@ import com.yama.finplus.domain.financeiro.DadosAtualizacaoFinanceiro;
 import com.yama.finplus.domain.financeiro.DadosCadastroFinanceiro;
 import com.yama.finplus.domain.financeiro.DadosDetalhamentoFinanceiro;
 import com.yama.finplus.domain.financeiro.DadosResumoFinanceiro;
-import com.yama.finplus.domain.enums.TipoMovimentacao;
+import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
 import com.yama.finplus.domain.financeiro.FinanceiroService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
