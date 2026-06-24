@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,7 +36,7 @@ public class Financeiro {
     @ManyToOne
     private Cartao cartao;
     //O relacionamento já é controlado pelo atributo financeiro que existe dentro de Parcelas
-    @OneToMany(mappedBy = "financeiro")
+    @OneToMany(mappedBy = "financeiro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Parcela> parcelas;
 
     public Financeiro() {}
@@ -46,6 +47,7 @@ public class Financeiro {
         this.valor = dados.valor();
         this.descricao = dados.descricao();
         this.tipo = dados.tipo();
+        this.formaPagamento = dados.formaPagamento();
     }
 
     public void atualizarDados(DadosAtualizacaoFinanceiro dados) {

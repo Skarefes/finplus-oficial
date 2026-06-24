@@ -19,6 +19,7 @@ public class Parcela {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer numeroParcelas;
+    private Integer totalParcelas;
     private BigDecimal valorParcela;
     @Enumerated(EnumType.STRING)
     private StatusPagamento statusPagamento;
