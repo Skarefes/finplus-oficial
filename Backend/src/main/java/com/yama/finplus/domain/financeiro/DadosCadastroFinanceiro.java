@@ -14,7 +14,7 @@ public record DadosCadastroFinanceiro(
         String descricao,
         @NotNull (message = "O tipo é obrigatório") TipoMovimentacao tipo,
         FormaPagamento formaPagamento,
-        Integer quantidadeParcela
+        Integer quantidadeParcelas
 ) {
     public DadosCadastroFinanceiro(Financeiro financeiro) {
         this(financeiro.getNome(), financeiro.getValor(), financeiro.getDescricao(), financeiro.getTipo(), financeiro.getFormaPagamento(), null);
