@@ -1,5 +1,6 @@
 package com.yama.finplus.domain.financeiro;
 
+import com.yama.finplus.domain.cartao.ParcelaService;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
 import com.yama.finplus.repository.FinanceiroRepository;
 import jakarta.transaction.Transactional;
@@ -13,9 +14,11 @@ import java.util.Optional;
 public class FinanceiroService {
 
     private final FinanceiroRepository financeiroRepository;
+    private final ParcelaService parcelaService;
 
-    public FinanceiroService(FinanceiroRepository financeiroRepository) {
+    public FinanceiroService(FinanceiroRepository financeiroRepository, ParcelaService parcelaService) {
         this.financeiroRepository = financeiroRepository;
+        this.parcelaService = parcelaService;
     }
 
     //Função para colocar as transicoes de gastos e ganhos
@@ -23,6 +26,8 @@ public class FinanceiroService {
     public DadosDetalhamentoFinanceiro registrar(DadosCadastroFinanceiro dados) {
         var financeiro = new Financeiro(dados);
         financeiroRepository.save(financeiro);
+
+
         return new DadosDetalhamentoFinanceiro(financeiro);
     }
 

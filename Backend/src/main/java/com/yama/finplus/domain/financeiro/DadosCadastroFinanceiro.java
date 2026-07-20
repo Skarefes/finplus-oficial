@@ -5,6 +5,7 @@ import com.yama.finplus.domain.financeiro.enums.FormaPagamento;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 
@@ -14,9 +15,13 @@ public record DadosCadastroFinanceiro(
         String descricao,
         @NotNull (message = "O tipo é obrigatório") TipoMovimentacao tipo,
         FormaPagamento formaPagamento,
-        Integer quantidadeParcelas
+        @Positive(message = "A quantidadde de parcelas deve ser maior que zero") Integer quantidadeParcelas
 ) {
     public DadosCadastroFinanceiro(Financeiro financeiro) {
         this(financeiro.getNome(), financeiro.getValor(), financeiro.getDescricao(), financeiro.getTipo(), financeiro.getFormaPagamento(), null);
+    }
+
+    public Integer quantidadeParcelas(){
+        return quantidadeParcelas;
     }
 }
