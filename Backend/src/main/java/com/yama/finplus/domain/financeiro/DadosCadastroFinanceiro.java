@@ -21,7 +21,8 @@ public record DadosCadastroFinanceiro(
         this(financeiro.getNome(), financeiro.getValor(), financeiro.getDescricao(), financeiro.getTipo(), financeiro.getFormaPagamento(), null);
     }
 
-    public Integer quantidadeParcelas(){
-        return quantidadeParcelas;
+    public Integer quantidadeParcelasFeitas(){
+        //condição ? valor_se_for_verdadeiro : valor_se_for_falso
+        return quantidadeParcelas == null?1 : quantidadeParcelas;
     }
 }

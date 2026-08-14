@@ -18,11 +18,21 @@ public class Parcela {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer numeroParcelas;
+    private Integer numeroParcela;
     private Integer totalParcelas;
     private BigDecimal valorParcela;
     @Enumerated(EnumType.STRING)
     private StatusPagamento statusPagamento;
     @ManyToOne
     private Financeiro financeiro;
+
+    public Parcela(Financeiro financeiro,
+                   Integer numeroParcela,
+                   Integer totalParcelas,
+                   BigDecimal valorParcela) {
+        this.financeiro = financeiro;
+        this.numeroParcela = numeroParcela;
+        this.totalParcelas = totalParcelas;
+        this.valorParcela = valorParcela;
+    }
 }
