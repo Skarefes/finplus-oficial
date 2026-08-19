@@ -14,7 +14,7 @@ public record DadosCadastroFinanceiro(
         @NotNull (message = "O valor é obritatório!") BigDecimal valor,
         String descricao,
         @NotNull (message = "O tipo é obrigatório") TipoMovimentacao tipo,
-        FormaPagamento formaPagamento,
+        @NotNull (message = "Indique a forma de pagamento")FormaPagamento formaPagamento,
         @Positive(message = "A quantidadde de parcelas deve ser maior que zero") Integer quantidadeParcelas
 ) {
     public DadosCadastroFinanceiro(Financeiro financeiro) {

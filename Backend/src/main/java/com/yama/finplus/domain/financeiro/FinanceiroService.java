@@ -2,6 +2,7 @@ package com.yama.finplus.domain.financeiro;
 
 import com.yama.finplus.domain.cartao.ParcelaService;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
+import com.yama.finplus.infra.exceptions.FormaPagamentoNaoAutorizadaException;
 import com.yama.finplus.repository.FinanceiroRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,17 @@ public class FinanceiroService {
     //Função para colocar as transicoes de gastos e ganhos
     @Transactional
     public DadosDetalhamentoFinanceiro registrar(DadosCadastroFinanceiro dados) {
+        //Se a quantidade for maior que 1 e a forma de pagamento não permitir parcelamento, gera uma exceção
+        if (dados.quantidadeParcelasFeitas() > 1 && !dados.formaPagamento().permiteParcelamento()){
+            throw new FormaPagamentoNaoAutorizadaException("A forma de pagamento não permite parcelamento");
+        }
+
         var financeiro = new Financeiro(dados);
         financeiroRepository.save(financeiro);
 
         if (dados.formaPagamento().permiteParcelamento()){
             parcelaService.gerarParcelas(financeiro, dados.quantidadeParcelas());
         }
-
-
 
         return new DadosDetalhamentoFinanceiro(financeiro);
     }
