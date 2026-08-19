@@ -27,6 +27,11 @@ public class FinanceiroService {
         var financeiro = new Financeiro(dados);
         financeiroRepository.save(financeiro);
 
+        if (dados.formaPagamento().permiteParcelamento()){
+            parcelaService.gerarParcelas(financeiro, dados.quantidadeParcelas());
+        }
+
+
 
         return new DadosDetalhamentoFinanceiro(financeiro);
     }
