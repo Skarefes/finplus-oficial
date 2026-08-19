@@ -25,6 +25,9 @@ public class FinanceiroService {
     //Função para colocar as transicoes de gastos e ganhos
     @Transactional
     public DadosDetalhamentoFinanceiro registrar(DadosCadastroFinanceiro dados) {
+
+        Integer quantidade = dados.quantidadeParcelas();
+
         //Se a quantidade for maior que 1 e a forma de pagamento não permitir parcelamento, gera uma exceção
         if (dados.quantidadeParcelasFeitas() > 1 && !dados.formaPagamento().permiteParcelamento()){
             throw new FormaPagamentoNaoAutorizadaException("A forma de pagamento não permite parcelamento");
@@ -33,10 +36,8 @@ public class FinanceiroService {
         var financeiro = new Financeiro(dados);
         financeiroRepository.save(financeiro);
 
-        if (dados.formaPagamento().permiteParcelamento()){
-            parcelaService.gerarParcelas(financeiro, dados.quantidadeParcelas());
-        }
-
+        //Toda transação terá uma parcela, mesmo não precisando, ajudando na logica futura
+        parcelaService.gerarParcelas(financeiro, quantidade);
         return new DadosDetalhamentoFinanceiro(financeiro);
     }
 
