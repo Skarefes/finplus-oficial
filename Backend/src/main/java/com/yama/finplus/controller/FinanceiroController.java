@@ -6,6 +6,7 @@ import com.yama.finplus.domain.financeiro.DadosDetalhamentoFinanceiro;
 import com.yama.finplus.domain.financeiro.DadosResumoFinanceiro;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
 import com.yama.finplus.domain.financeiro.FinanceiroService;
+import com.yama.finplus.domain.resumo.ResumoFincanceiroService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,11 @@ import java.util.List;
 public class FinanceiroController {
 
     private final FinanceiroService service;
+    private final ResumoFincanceiroService resumo;
 
-    public FinanceiroController(FinanceiroService service) {
+    public FinanceiroController(FinanceiroService service, ResumoFincanceiroService resumo) {
         this.service = service;
+        this.resumo = resumo;
     }
 
     @PostMapping("/registrar")
@@ -53,17 +56,5 @@ public class FinanceiroController {
     public ResponseEntity<Void> deletarDados(@PathVariable Long id) {
         service.removerDados(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/soma-tudo")
-    public ResponseEntity<DadosResumoFinanceiro>somarFinancas(){
-        var somaTudo = service.somaTipos();
-        return ResponseEntity.ok(somaTudo);
-    }
-
-    @GetMapping("/saldo-total")
-    public ResponseEntity<BigDecimal> saldoTotal(){
-        var saldoTot = service.calcularSaldo();
-        return ResponseEntity.ok(saldoTot);
     }
 }

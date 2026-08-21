@@ -68,20 +68,4 @@ public class FinanceiroService {
         financeiroRepository.deleteById(id);
     }
 
-    //Função que vai somar as receitas e despesas totais
-    public DadosResumoFinanceiro somaTipos() {
-        BigDecimal receitas = Optional.ofNullable(financeiroRepository
-                .findByTipoAndSumTipo(TipoMovimentacao.RECEITA)).orElse(BigDecimal.ZERO);
-
-        BigDecimal despesas = Optional.ofNullable(financeiroRepository
-                .findByTipoAndSumTipo(TipoMovimentacao.DESPESA)).orElse(BigDecimal.ZERO);
-
-        return new DadosResumoFinanceiro(receitas, despesas);
-    }
-
-    //Função que vai analisar o saldo total entre receita e despesas
-    public BigDecimal calcularSaldo(){
-        DadosResumoFinanceiro resumo =  this.somaTipos();
-        return resumo.totalReceita().subtract(resumo.totalDespesa());
-    }
 }
