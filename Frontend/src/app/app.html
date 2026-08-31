@@ -2,19 +2,19 @@
     <header class="topo">
         <h1>FinPlus</h1>
         <p>Ola, Usuário!</p>
+        
     </header>
 
     <main>
         <section class="resumo">
             <div class="card">
                 <h2>Ganhos</h2>
-                <p>R$ 3.000,00</p>
+                <p>{{totalReceita | currency: 'BRL':'symbol':'1.2-2':'pt-BR'}}</p>
             </div>
             <div class="card">
                 <h2>Gastos</h2>
-                <p>R$ 2.000,00</p>
+                <p>{{totalDespesa | currency: 'BRL':'symbol':'1.2-2':'pt-BR'}}</p>
             </div>
-
         </section>
 
         <section class="movimentacoes">
@@ -22,7 +22,7 @@
                 <h2>Ganhos</h2>
 
                 <div class="item">
-                    <span>Salário </span>
+                    <span>Exemplo </span>
                     <span>R$ 3.500,00</span>
                 </div>
                 <div class="item">
@@ -35,7 +35,7 @@
                 <h2>Gastos</h2>
 
                 <div class="item">
-                    <span>Mercado</span>
+                    <span>Exemplo</span>
                     <span>R$ 300,00</span>
                 </div>
                 <div class="item">
