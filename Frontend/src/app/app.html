@@ -1,49 +1,118 @@
 <div class="container">
-    <header class="topo">
-        <h1>FinPlus</h1>
-        <p>Ola, Usuário!</p>
-        
-    </header>
+  <header class="topo">
+    <h1>FinPlus</h1>
+    <p>Ola, Usuário!</p>
+  </header>
 
-    <main>
-        <section class="resumo">
-            <div class="card">
-                <h2>Ganhos</h2>
-                <p>{{totalReceita | currency: 'BRL':'symbol':'1.2-2':'pt-BR'}}</p>
-            </div>
-            <div class="card">
-                <h2>Gastos</h2>
-                <p>{{totalDespesa | currency: 'BRL':'symbol':'1.2-2':'pt-BR'}}</p>
-            </div>
-        </section>
+  <main>
+    <section class="resumo">
+      <div class="card">
+        <h2>Ganhos</h2>
+        <p>{{ totalReceita | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</p>
+      </div>
+      <div class="card" , style="background-color: rgb(230, 98, 98)">
+        <h2>Gastos</h2>
+        <p>{{ totalDespesa | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</p>
+      </div>
+    </section>
 
-        <section class="movimentacoes">
-            <div class="bloco"> 
-                <h2>Ganhos</h2>
+    <section class="formulario">
+      <button (click)="abrirFormulario()">+ Nova Movimentação</button>
 
-                <div class="item">
-                    <span>Exemplo </span>
-                    <span>R$ 3.500,00</span>
-                </div>
-                <div class="item">
-                    <span>Freelance </span>
-                    <span>R$ 500,00</span>
-                </div>
+      @if (mostrarFormulario) {
+        <div class="formulario-container">
+          <h2>Nova Movimentação</h2>
+
+          <form>
+            <div class="campo">
+              <label for="nome">Nome</label>
+              <input type="text" id="nome" name="nome" />
             </div>
 
-            <div class="bloco"> 
-                <h2>Gastos</h2>
-
-                <div class="item">
-                    <span>Exemplo</span>
-                    <span>R$ 300,00</span>
-                </div>
-                <div class="item">
-                    <span>Dark Souls</span>
-                    <span>R$200,00</span>
-                </div>
+            <div class="campo">
+              <label for="valor">Valor</label>
+              <input type="number" id="valor" name="valor" />
             </div>
 
-        </section>
-    </main>
+            <div class="campo">
+              <label for="descricao">Descrição</label>
+              <input type="text" id="descricao" name="descricao" />
+            </div>
+
+            <div class="campo">
+              <label for="tipo">Tipo</label>
+
+              <select id="tipo" name="tipo">
+                <option value="RECEITA">Receita</option>
+                <option value="DESPESA">Despesa</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="pagamento">Forma de pagamento</label>
+
+              <select id="pagamento" name="pagamento">
+                <option value="PIX">PIX</option>
+                <option value="DEBITO">Débito</option>
+                <option value="CREDITO">Crédito</option>
+                <option value="DINHEIRO">Dinheiro</option>
+                <option value="BOLETO">Boleto</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="parcelas">Quantidade de parcelas</label>
+
+              <input type="number" id="parcelas" name="parcelas" min="1" />
+            </div>
+
+            <div class="acoes">
+              <button type="button" (click)="fecharFormulario()">Cancelar</button>
+
+              <button type="submit">Salvar</button>
+            </div>
+          </form>
+        </div>
+      }
+    </section>
+
+    <section class="movimentacoes">
+      <div class="bloco">
+        <h2>Ganhos</h2>
+
+        @for (financeiro of financeiros; track financeiro.id) {
+          @if (financeiro.tipo === 'RECEITA') {
+            <div class="item">
+              <div class="descricao">
+                <strong>{{ financeiro.nome }}</strong>
+                <small>{{ financeiro.descricao }}</small>
+              </div>
+            </div>
+
+            <span>
+              {{ financeiro.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+            </span>
+          }
+        }
+      </div>
+      <div class="bloco">
+        <h2>Gastos</h2>
+
+        @for (financeiro of financeiros; track $index) {
+          @if (financeiro.tipo === 'DESPESA') {
+            <div class="item">
+              <div class="descricao">
+                <strong>{{ financeiro.nome }}</strong>
+                <small>{{ financeiro.descricao }}</small>
+              </div>
+            </div>
+
+            <span>
+              {{ financeiro.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+            </span>
+          }
+        }
+      </div>
+    </section>
+  </main>
 </div>

@@ -12,10 +12,14 @@ export class FinanceiroService {
   constructor(private http: HttpClient){}
 
   buscarFinanceiro(){
+    return this.http.get<DadosDetalhamentoFinanceiro[]>(
+      `${this.apiUrl}/listar-tudo`
+    );
 
   }
 
-  criarFinanceiro(){
-
+  //Receba um objeto DadosCadastroFinanceiro e envie esse objeto para a API
+  criarFinanceiro(financeiro: DadosCadastroFinanceiro){
+    return this.http.post(`${this.apiUrl}/registrar`, financeiro);
   }
 }
