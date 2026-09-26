@@ -6,18 +6,18 @@
 
   <main>
     <section class="resumo">
-      <div class="card">
+      <div class="card" style="color: rgb(16, 206, 16);">
         <h2>Ganhos</h2>
-        <p>{{ totalReceita | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</p>
+        <p>{{ totalReceita() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</p>
       </div>
-      <div class="card" , style="background-color: rgb(230, 98, 98)">
+      <div class="card" style="color: rgb(228, 6, 6);">
         <h2>Gastos</h2>
-        <p>{{ totalDespesa | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</p>
+        <p>{{ totalDespesa() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</p>
       </div>
     </section>
 
     <section class="formulario">
-      <button (click)="abrirFormulario()">+ Nova Movimentação</button>
+      <button (click)="abrirFormulario()" class="botaoFormulario">+ Nova Movimentação</button>
 
       @if (mostrarFormulario) {
         <div class="formulario-container">
@@ -26,23 +26,23 @@
           <form>
             <div class="campo">
               <label for="nome">Nome</label>
-              <input type="text" id="nome" name="nome" />
+              <input type="text" id="nome" name="nome" [(ngModel)]="nome" />
             </div>
 
             <div class="campo">
               <label for="valor">Valor</label>
-              <input type="number" id="valor" name="valor" />
+              <input type="number" id="valor" name="valor" [(ngModel)]="valor"/>
             </div>
 
             <div class="campo">
               <label for="descricao">Descrição</label>
-              <input type="text" id="descricao" name="descricao" />
+              <input type="text" id="descricao" name="descricao" [(ngModel)]="descricao"/>
             </div>
 
             <div class="campo">
               <label for="tipo">Tipo</label>
 
-              <select id="tipo" name="tipo">
+              <select id="tipo" name="tipo" [(ngModel)]="tipo">
                 <option value="RECEITA">Receita</option>
                 <option value="DESPESA">Despesa</option>
               </select>
@@ -51,7 +51,7 @@
             <div class="campo">
               <label for="pagamento">Forma de pagamento</label>
 
-              <select id="pagamento" name="pagamento">
+              <select id="pagamento" name="pagamento" [(ngModel)]="formaPagamento">
                 <option value="PIX">PIX</option>
                 <option value="DEBITO">Débito</option>
                 <option value="CREDITO">Crédito</option>
@@ -60,16 +60,22 @@
               </select>
             </div>
 
-            <div class="campo">
+            @if (formaPagamento === 'CREDITO') {
+              <div class="campo">
               <label for="parcelas">Quantidade de parcelas</label>
 
-              <input type="number" id="parcelas" name="parcelas" min="1" />
+              <input type="number" id="parcelas" min="1" name="parcelas" [(ngModel)]="quantidadeParcelas"/>
             </div>
+            }
+
 
             <div class="acoes">
               <button type="button" (click)="fecharFormulario()">Cancelar</button>
 
-              <button type="submit">Salvar</button>
+              <button type="button" (click)="salvarFinanceiro()" [disabled]="quantidadeParcelas !== undefined && quantidadeParcelas < 1">Salvar</button>
+
+              /*otão testar no console*/
+              <button type="button" (click)="mostrarDados()" [disabled]="quantidadeParcelas !== undefined && quantidadeParcelas < 1">Testando</button>
             </div>
           </form>
         </div>
@@ -78,9 +84,10 @@
 
     <section class="movimentacoes">
       <div class="bloco">
+        <p>Total de Registros: {{financeiros().length}}</p>
         <h2>Ganhos</h2>
 
-        @for (financeiro of financeiros; track financeiro.id) {
+        @for (financeiro of financeiros(); track financeiro.id) {
           @if (financeiro.tipo === 'RECEITA') {
             <div class="item">
               <div class="descricao">
@@ -92,13 +99,16 @@
             <span>
               {{ financeiro.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
             </span>
+
+            <button type="button" (click)="editarFormulario(financeiro)">Editar</button>
+            <button type="button" (click)="excluirFinanceiro(financeiro.id)">Excluir</button>
           }
         }
       </div>
       <div class="bloco">
         <h2>Gastos</h2>
 
-        @for (financeiro of financeiros; track $index) {
+        @for (financeiro of financeiros(); track financeiro.id) {
           @if (financeiro.tipo === 'DESPESA') {
             <div class="item">
               <div class="descricao">
@@ -110,6 +120,9 @@
             <span>
               {{ financeiro.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
             </span>
+
+            <button type="button" (click)="editarFormulario(financeiro)">Editar</button>
+            <button type="button" (click)="excluirFinanceiro(financeiro.id)">Excluir</button>
           }
         }
       </div>

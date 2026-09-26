@@ -22,4 +22,14 @@ export class FinanceiroService {
   criarFinanceiro(financeiro: DadosCadastroFinanceiro){
     return this.http.post(`${this.apiUrl}/registrar`, financeiro);
   }
+
+  alterarFinanceiro(id: number, financeiro: DadosCadastroFinanceiro){
+    return this.http.put(
+      `${this.apiUrl}/${id}`, financeiro
+    );
+  }
+
+  excluirFinanceiro(id: number){
+    return this.http.delete(`${this.apiUrl}/${id}`)
+  }
 }
