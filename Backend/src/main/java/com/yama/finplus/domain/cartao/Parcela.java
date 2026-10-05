@@ -24,6 +24,7 @@ public class Parcela {
     @Enumerated(EnumType.STRING)
     private StatusPagamento statusPagamento;
     @ManyToOne
+    @JoinColumn(name = "financeiro_id", nullable = false)
     private Financeiro financeiro;
 
     public Parcela(Financeiro financeiro,

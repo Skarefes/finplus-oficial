@@ -6,6 +6,7 @@ import com.yama.finplus.domain.cartao.Parcela;
 import com.yama.finplus.domain.financeiro.enums.Categoria;
 import com.yama.finplus.domain.financeiro.enums.FormaPagamento;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
+import com.yama.finplus.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,10 +35,14 @@ public class Financeiro {
     @Enumerated(EnumType.STRING)
     private FormaPagamento formaPagamento;
     @ManyToOne
+    @JoinColumn(name = "cartao_id")
     private Cartao cartao;
     //O relacionamento já é controlado pelo atributo financeiro que existe dentro de Parcelas
     @OneToMany(mappedBy = "financeiro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Parcela> parcelas;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false) // o usuario nao pode ter id nullo
+    private Usuario usuario;
 
     public Financeiro() {}
 
