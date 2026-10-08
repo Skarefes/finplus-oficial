@@ -12,7 +12,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(UsuarioRepository usuarioRepository, UsuarioRepository usuarioRepository1, PasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository1;
+        this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
     }
 

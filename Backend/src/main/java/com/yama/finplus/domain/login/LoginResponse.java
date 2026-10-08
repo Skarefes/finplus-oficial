@@ -1,4 +1,4 @@
-package com.yama.finplus.domain.usuario;
+package com.yama.finplus.domain.login;
 
 public record LoginResponse(String token) {
 }

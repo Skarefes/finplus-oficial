@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,7 +28,7 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Financeiro> financeiros;
+    private List<Financeiro> financeiros = new ArrayList<>(); //lista de registros financeiros que pertencem a um usuario
 
     public Usuario(DadosCadastroUsuario dadosCadastroUsuario) {
         this.username = dadosCadastroUsuario.username();
