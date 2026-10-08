@@ -41,7 +41,7 @@ public class Financeiro {
     //O relacionamento já é controlado pelo atributo financeiro que existe dentro de Parcelas
     @OneToMany(mappedBy = "financeiro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Parcela> parcelas;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id", nullable = false) // o usuario nao pode ter id nullo
     private Usuario usuario;
 
@@ -72,5 +72,9 @@ public class Financeiro {
         if (dados.tipo() != null){
             this.tipo = dados.tipo();
         }
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }

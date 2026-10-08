@@ -4,6 +4,7 @@ import com.yama.finplus.domain.usuario.UsuarioDetailsService;
 import com.yama.finplus.infra.security.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -47,8 +48,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) //desabilita o csrf
-                .authorizeHttpRequests(auth -> auth //autoriza o registrar
+                .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()// pode ser acessado sem autenticação
+                                .requestMatchers(HttpMethod.POST, "/usuario/registrar").permitAll()
                 .anyRequest().authenticated()
                 ) //Agora colocar o filtro no filtro
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

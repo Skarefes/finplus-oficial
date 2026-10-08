@@ -8,12 +8,29 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface FinanceiroRepository extends JpaRepository<Financeiro, Long> {
-    List<Financeiro> findByTipo(TipoMovimentacao tipo);
+    List<Financeiro> findAllByUsuario_Email(String email);
 
-    //Fazer uma soma com o tipo desejado
-    @Query("select sum (f.valor) from Financeiro f where f.tipo = :tipo")
-    BigDecimal findByTipoAndSumTipo(@Param("tipo") TipoMovimentacao tipoMovimentacao);
+    List<Financeiro> findByTipoAndUsuario_Email(
+            TipoMovimentacao tipo,
+            String email
+    );
 
+    Optional<Financeiro> findByIdAndUsuario_Email(
+            Long id,
+            String email
+    );
+
+    @Query("""
+        SELECT SUM(f.valor)
+        FROM Financeiro f
+        WHERE f.tipo = :tipo
+          AND f.usuario.email = :email
+        """)
+    BigDecimal somarPorTipoEUsuario(
+            @Param("tipo") TipoMovimentacao tipo,
+            @Param("email") String email
+    );
 }

@@ -2,9 +2,12 @@ package com.yama.finplus.domain.financeiro;
 
 import com.yama.finplus.domain.cartao.ParcelaService;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
+import com.yama.finplus.domain.usuario.Usuario;
 import com.yama.finplus.infra.exceptions.FormaPagamentoNaoAutorizadaException;
 import com.yama.finplus.repository.FinanceiroRepository;
+import com.yama.finplus.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,15 +19,19 @@ public class FinanceiroService {
 
     private final FinanceiroRepository financeiroRepository;
     private final ParcelaService parcelaService;
+    private final UsuarioRepository usuarioRepository;
 
-    public FinanceiroService(FinanceiroRepository financeiroRepository, ParcelaService parcelaService) {
+    public FinanceiroService(FinanceiroRepository financeiroRepository, ParcelaService parcelaService, UsuarioRepository usuarioRepository) {
         this.financeiroRepository = financeiroRepository;
         this.parcelaService = parcelaService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     //Função para colocar as transicoes de gastos e ganhos
     @Transactional
-    public DadosDetalhamentoFinanceiro registrar(DadosCadastroFinanceiro dados) {
+    public DadosDetalhamentoFinanceiro registrar(DadosCadastroFinanceiro dados, String email) {
+
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Usuario não encontrado"));
 
         Integer quantidade = dados.quantidadeParcelas();
 
@@ -34,6 +41,10 @@ public class FinanceiroService {
         }
 
         var financeiro = new Financeiro(dados);
+
+        //Vincula a transação ao usuario autenticado
+        financeiro.setUsuario(usuario);
+
         financeiroRepository.save(financeiro);
 
         //Toda transação terá uma parcela, mesmo não precisando, ajudando na logica futura
@@ -42,30 +53,34 @@ public class FinanceiroService {
     }
 
     //Função para pegar todos os dados
-    public List<DadosDetalhamentoFinanceiro> listarTudo() {
-        return financeiroRepository.findAll().stream()
+    public List<DadosDetalhamentoFinanceiro> listarTudo(String email) {
+        return financeiroRepository.findAllByUsuario_Email(email).stream()
                 .map(DadosDetalhamentoFinanceiro::new).toList();
     }
 
     //Função para filtrar a lista do tipo e enviar conforme requisitado pelo URL
-    public List<DadosDetalhamentoFinanceiro> listarPorTipo(TipoMovimentacao tipo) {
-        return financeiroRepository.findByTipo(tipo).stream()
+    public List<DadosDetalhamentoFinanceiro> listarPorTipo(TipoMovimentacao tipo, String email) {
+        return financeiroRepository.findByTipoAndUsuario_Email(tipo, email).stream()
                 .map(DadosDetalhamentoFinanceiro::new).toList();
     }
 
     @Transactional
     //Função para editar um item
-    public DadosDetalhamentoFinanceiro editarDados(Long id, DadosAtualizacaoFinanceiro dados) {
+    public DadosDetalhamentoFinanceiro editarDados(Long id, DadosAtualizacaoFinanceiro dados, String email) {
         //identificador fincaneiro ele pega o repository do Financeiro que ja é o objeto pra poder editar
-        var identificadorFinanceiro = financeiroRepository.findById(id).orElseThrow();
+        var identificadorFinanceiro = financeiroRepository.findByIdAndUsuario_Email(id, email).orElseThrow();
         identificadorFinanceiro.atualizarDados(dados);
         //retorna um novo DTO com os novos dados
         return new DadosDetalhamentoFinanceiro(identificadorFinanceiro);
     }
 
     //Função que deleta um item
-    public void removerDados(Long id) {
-        financeiroRepository.deleteById(id);
+    @Transactional
+    public void removerDados(Long id, String email) {
+        var financeiro = financeiroRepository
+                .findByIdAndUsuario_Email(id, email).orElseThrow();
+
+        financeiroRepository.delete(financeiro);
     }
 
 }

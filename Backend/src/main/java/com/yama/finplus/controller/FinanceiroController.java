@@ -10,6 +10,7 @@ import com.yama.finplus.domain.resumo.ResumoFincanceiroService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -29,32 +30,40 @@ public class FinanceiroController {
 
     @PostMapping("/registrar")
     public ResponseEntity<DadosDetalhamentoFinanceiro> registrar(
-            @RequestBody @Valid DadosCadastroFinanceiro dados) {
-        var detalhamento = service.registrar(dados);
+            @RequestBody @Valid DadosCadastroFinanceiro dados, Authentication authentication) {
+
+        String email = authentication.getName();
+
+        var detalhamento = service.registrar(dados, email);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(detalhamento);
     }
 
     @GetMapping("/listar-tudo")
-    public ResponseEntity<List<DadosDetalhamentoFinanceiro>> lerTodosDados(){
-        var dados = service.listarTudo();
+    public ResponseEntity<List<DadosDetalhamentoFinanceiro>> lerTodosDados(Authentication authentication) {
+        String email = authentication.getName();
+        var dados = service.listarTudo(email);
         return ResponseEntity.ok(dados);
     }
 
     @GetMapping("/filtro")
-    public ResponseEntity<List<DadosDetalhamentoFinanceiro>> listarPorTipo(@RequestParam TipoMovimentacao tipo) {
-        var tipos = service.listarPorTipo(tipo);
+    public ResponseEntity<List<DadosDetalhamentoFinanceiro>> listarPorTipo(@RequestParam TipoMovimentacao tipo, Authentication authentication) {
+        String email = authentication.getName();
+        var tipos = service.listarPorTipo(tipo, email);
         return ResponseEntity.ok(tipos);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DadosDetalhamentoFinanceiro> atualizarDados(@PathVariable Long id, @Valid @RequestBody DadosAtualizacaoFinanceiro dados) {
-        var editar = service.editarDados(id, dados);
+    public ResponseEntity<DadosDetalhamentoFinanceiro> atualizarDados(@PathVariable Long id, @Valid @RequestBody DadosAtualizacaoFinanceiro dados, Authentication authentication) {
+        String email = authentication.getName();
+        var editar = service.editarDados(id, dados,  email);
         return ResponseEntity.ok(editar);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarDados(@PathVariable Long id) {
-        service.removerDados(id);
+    public ResponseEntity<Void> deletarDados(@PathVariable Long id, Authentication authentication) {
+        String email = authentication.getName();
+        service.removerDados(id, email);
         return ResponseEntity.noContent().build();
     }
 }

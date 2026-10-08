@@ -14,26 +14,25 @@ public class ResumoFincanceiroService {
 
     final private FinanceiroRepository financeiroRepository;
 
-
     public ResumoFincanceiroService(FinanceiroRepository financeiroRepository, ParcelaService parcelaService) {
         this.financeiroRepository = financeiroRepository;
 
     }
 
-    //Função que vai somar as receitas e despesas totais
-    public DadosResumoFinanceiro somaTipos() {
+    //Função que vai somar as receitas e despesas totais, para cada usuario
+    public DadosResumoFinanceiro somaTipos(String email) {
         BigDecimal receitas = Optional.ofNullable(financeiroRepository
-                .findByTipoAndSumTipo(TipoMovimentacao.RECEITA)).orElse(BigDecimal.ZERO);
+                .somarPorTipoEUsuario(TipoMovimentacao.RECEITA, email)).orElse(BigDecimal.ZERO);
 
         BigDecimal despesas = Optional.ofNullable(financeiroRepository
-                .findByTipoAndSumTipo(TipoMovimentacao.DESPESA)).orElse(BigDecimal.ZERO);
+                .somarPorTipoEUsuario(TipoMovimentacao.DESPESA, email)).orElse(BigDecimal.ZERO);
 
         return new DadosResumoFinanceiro(receitas, despesas);
     }
 
-    //Função que vai analisar o saldo total entre receita e despesas
-    public BigDecimal calcularSaldoTotal(){
-        DadosResumoFinanceiro resumo =  this.somaTipos();
+    //Função que vai analisar o saldo total entre receita e despesas, para cada usuario
+    public BigDecimal calcularSaldoTotal(String email) {
+        DadosResumoFinanceiro resumo =  this.somaTipos(email);
         return resumo.totalReceita().subtract(resumo.totalDespesa());
     }
 

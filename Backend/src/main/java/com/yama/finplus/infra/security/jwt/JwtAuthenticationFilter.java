@@ -1,6 +1,7 @@
 package com.yama.finplus.infra.security.jwt;
 
 import com.yama.finplus.domain.usuario.UsuarioDetailsService;
+import io.jsonwebtoken.JwtException;
 import jakarta.persistence.OneToMany;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -22,8 +24,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UsuarioDetailsService usuarioDetailsService;
 
-    public JwtAuthenticationFilter(JwtService jwtService1, UsuarioDetailsService usuarioDetailsService) {
-        this.jwtService = jwtService1;
+    public JwtAuthenticationFilter(JwtService jwtService, UsuarioDetailsService usuarioDetailsService) {
+        this.jwtService = jwtService;
         this.usuarioDetailsService = usuarioDetailsService;
     }
 
@@ -43,21 +45,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         //extrai o token e do usuario
         String token = authHeader.substring(7);
-        String email = jwtService.extrairUsername(token);
 
-        //busca dos detahles do usuario no banco de dados
-        UserDetails userDetails = usuarioDetailsService.loadUserByUsername(email);
+        //Quando o usuario esta errado, token é mal informado expirado ou assinatura errada, vai gerar um erro
+        try{
+            String email = jwtService.extrairUsername(token);
 
-        //validação to Token, ele faz uma analise sobre o token se expirou
-        // e se o email no token bate com o que o userDetails retorna pelo banco
-        if (jwtService.validarToken(token, userDetails)) {
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            //busca dos detahles do usuario no banco de dados
+            UserDetails userDetails = usuarioDetailsService.loadUserByUsername(email);
 
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            //validação to Token, ele faz uma analise sobre o token se expirou
+            // e se o email no token bate com o que o userDetails retorna pelo banco
+            if (jwtService.validarToken(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            }
+        } catch (JwtException | IllegalArgumentException | UsernameNotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //Gera erro 401, que é o problema no usuario e nao no servidor
+            return;
         }
+
 
         //passa a requisição para o próximo filtro na corrente, no caso o controller para processar o endpoint
         filterChain.doFilter(request, response);
