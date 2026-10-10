@@ -1,6 +1,7 @@
 package com.yama.finplus.domain.usuario;
 
 import com.yama.finplus.repository.UsuarioRepository;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,7 +18,7 @@ public class UsuarioDetailsService implements UserDetailsService {
     @Override //buscar no banco de dados o usuario e identificar no login, no caso é o email
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByEmail(login)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado"));
+                .orElseThrow(() -> new BadCredentialsException("Email ou senha inválido"));
 
         return new UsuarioDetails(usuario);
     }
