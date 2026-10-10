@@ -1,0 +1,20 @@
+<main>
+  <section class="config-cabecalho">
+    <span class="subtitulo">Conta</span>
+    <h1>Configurações</h1>
+  </section>
+
+  <section class="zona-perigo">
+    <h2>Excluir conta</h2>
+    <p>
+      Ao excluir sua conta, todos os seus ganhos, gastos e parcelas serão apagados
+      permanentemente.
+    </p>
+
+    @if (erro) {
+      <p class="config-erro" role="alert">{{ erro }}</p>
+    }
+
+    <button type="button" class="botao-perigo" (click)="excluirConta()">Excluir minha conta</button>
+  </section>
+</main>

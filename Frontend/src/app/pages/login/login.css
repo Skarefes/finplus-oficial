@@ -1,0 +1,65 @@
+.campos-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.login-pagina {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 28px 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(24, 48, 62, 0.05);
+}
+
+.login-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  color: var(--navy);
+}
+
+.login-card h1 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.login-texto {
+  margin: 8px 0 20px;
+  color: var(--muted);
+}
+
+.login-botao {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.login-erro {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--coral-suave);
+  color: var(--coral);
+  font-size: 0.875rem;
+}
+
+.login-alternar {
+  display: block;
+  margin: 18px auto 0;
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: underline;
+}

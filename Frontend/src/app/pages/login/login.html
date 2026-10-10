@@ -1,0 +1,46 @@
+<main class="login-pagina">
+  <section class="login-card">
+    <div class="login-marca">
+      <span class="marca-icone" aria-hidden="true">F</span>
+      <span class="marca-nome">FinPlus</span>
+    </div>
+
+    <h1>{{ modoCadastro ? 'Criar conta' : 'Entrar' }}</h1>
+    <p class="login-texto">
+      {{ modoCadastro ? 'Cadastre-se para controlar suas finanças.' : 'Acesse sua conta para continuar.' }}
+    </p>
+
+    <form (ngSubmit)="enviar()">
+      <div class="campos-grid">
+        <div class="campo">
+          <label for="email">E-mail</label>
+          <input type="text" id="email" name="email" autocomplete="username" [(ngModel)]="email" required />
+        </div>
+
+        <div class="campo">
+          <label for="senha">Senha</label>
+          <input
+            type="password"
+            id="senha"
+            name="senha"
+            [autocomplete]="modoCadastro ? 'new-password' : 'current-password'"
+            [(ngModel)]="senha"
+            required
+          />
+        </div>
+      </div>
+
+      @if (erro) {
+        <p class="login-erro" role="alert">{{ erro }}</p>
+      }
+
+      <button type="submit" class="botao-principal login-botao" [disabled]="carregando || !email || !senha">
+        {{ carregando ? 'Aguarde...' : modoCadastro ? 'Criar conta' : 'Entrar' }}
+      </button>
+    </form>
+
+    <button type="button" class="login-alternar" (click)="alternarModo()">
+      {{ modoCadastro ? 'Já tenho conta. Entrar' : 'Não tenho conta. Criar agora' }}
+    </button>
+  </section>
+</main>

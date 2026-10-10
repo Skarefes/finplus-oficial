@@ -1,0 +1,252 @@
+<div class="container">
+  <!-- Cabeçalho -->
+  <!--<header class="topo">
+    <a class="marca" href="#visao-geral" aria-label="FinPlus, ir para visão geral">
+      <span class="marca-icone" aria-hidden="true">F</span>
+      <span class="marca-nome">FinPlus</span>
+    </a>
+
+    <nav class="navegacao" aria-label="Navegação principal">
+      <a href="#visao-geral">Visão geral</a>
+      <a href="#movimentacoes">Transações</a>
+    </nav>
+
+    <div class="usuario">
+      <span class="usuario-nome">Olá, {{primeiroNome()}}</span>
+      <div class="avatar" aria-hidden="true">{{inicial()}}</div>
+      <button type="button" class="botao-sair" (click)="auth.logout()">Sair</button>
+    </div>
+  </header>-->
+</div>
+  <main>
+    <!-- Apresentação -->
+    <section class="boas-vindas" id="visao-geral">
+      <div class="boas-vindas-texto">
+        <span class="subtitulo">Resumo financeiro</span>
+        <h1>Olá, {{primeiroNome()}}. Acompanhe suas finanças.</h1>
+        <p>Veja seus ganhos, gastos e saldo em um só lugar.</p>
+      </div>
+
+      <button type="button" class="botao-principal" (click)="abrirFormulario()">
+        Adicionar transação
+      </button>
+    </section>
+
+    <!-- Cards de resumo -->
+    <section class="resumo" aria-label="Resumo do saldo">
+      <div class="card card-saldo">
+        <div class="card-cabecalho">
+          <span>Saldo atual</span>
+          <span class="icone" aria-hidden="true">R$</span>
+        </div>
+        <h3>
+          {{ totalReceita() - totalDespesa() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+        </h3>
+        <small>Ganhos menos gastos</small>
+      </div>
+
+      <div class="card card-receita">
+        <div class="card-cabecalho">
+          <span>Ganhos</span>
+          <span class="icone" aria-hidden="true">↑</span>
+        </div>
+        <h3>
+          {{ totalReceita() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+        </h3>
+        <small>Total de ganhos</small>
+      </div>
+
+      <div class="card card-despesa">
+        <div class="card-cabecalho">
+          <span>Gastos</span>
+          <span class="icone" aria-hidden="true">↓</span>
+        </div>
+        <h3>
+          {{ totalDespesa() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+        </h3>
+        <small>Total de gastos</small>
+      </div>
+    </section>
+
+    <!-- Movimentações -->
+    <section class="movimentacoes" id="movimentacoes">
+      <div class="titulo-secao">
+        <div>
+          <span class="subtitulo">Atividade recente</span>
+          <h2>Transações</h2>
+        </div>
+        <span class="contador">{{ financeiros().length }} registros</span>
+      </div>
+
+      <div class="listas">
+        <!-- Ganhos -->
+        <div class="bloco">
+          <div class="bloco-titulo">
+            <div class="titulo-tipo receita">
+              <span aria-hidden="true">↑</span>
+              <h3>Ganhos</h3>
+            </div>
+          </div>
+
+          @for (financeiro of financeiros(); track financeiro.id) {
+            @if (financeiro.tipo === 'RECEITA') {
+              <div class="item">
+                <div class="item-info">
+                  <div class="item-icone receita" aria-hidden="true">↑</div>
+                  <div class="descricao">
+                    <strong>{{ financeiro.nome }}</strong>
+                    <small>{{ financeiro.descricao }}</small>
+                  </div>
+                </div>
+
+                <div class="item-direita">
+                  <strong class="valor receita">
+                    {{ financeiro.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                  </strong>
+                  <div class="item-acoes">
+                    <button type="button" (click)="editarFormulario(financeiro)">Editar</button>
+                    <button type="button" (click)="excluirFinanceiro(financeiro.id)">Excluir</button>
+                  </div>
+                </div>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Gastos -->
+        <div class="bloco">
+          <div class="bloco-titulo">
+            <div class="titulo-tipo despesa">
+              <span aria-hidden="true">↓</span>
+              <h3>Gastos</h3>
+            </div>
+          </div>
+
+          @for (financeiro of financeiros(); track financeiro.id) {
+            @if (financeiro.tipo === 'DESPESA') {
+              <div class="item">
+                <div class="item-info">
+                  <div class="item-icone despesa" aria-hidden="true">↓</div>
+                  <div class="descricao">
+                    <strong>{{ financeiro.nome }}</strong>
+                    <small>{{ financeiro.descricao }}</small>
+                  </div>
+                </div>
+
+                <div class="item-direita">
+                  <strong class="valor despesa">
+                    {{ financeiro.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                  </strong>
+                  <div class="item-acoes">
+                    <button type="button" (click)="editarFormulario(financeiro)">Editar</button>
+                    <button type="button" (click)="excluirFinanceiro(financeiro.id)">Excluir</button>
+                  </div>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!--<footer>
+    <p>FinPlus · Controle financeiro simplificado</p>
+  </footer>-->
+
+
+<!-- Modal: fica fora do .container e só existe quando mostrarFormulario é true -->
+@if (mostrarFormulario) {
+  <div class="modal-fundo" (click)="fecharFormulario()">
+    <section
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-titulo"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-topo">
+        <div>
+          <span class="subtitulo">{{ financeiroEditando ? 'Editar' : 'Nova movimentação' }}</span>
+          <h2 id="modal-titulo">
+            {{ financeiroEditando ? 'Editar transação' : 'Adicionar transação' }}
+          </h2>
+        </div>
+        <button type="button" class="botao-fechar" aria-label="Fechar" (click)="fecharFormulario()">
+          ✕
+        </button>
+      </div>
+
+      <form>
+        <div class="campos-grid">
+          <div class="campo">
+            <label for="nome">Nome</label>
+            <input type="text" name="nome" id="nome" placeholder="Ex: Salário" [(ngModel)]="nome" />
+          </div>
+
+          <div class="campo">
+            <label for="valor">Valor (R$)</label>
+            <input type="number" id="valor" name="valor" placeholder="0,00" [(ngModel)]="valor" />
+          </div>
+
+          <div class="campo campo-completo">
+            <label for="descricao">Descrição</label>
+            <input
+              type="text"
+              id="descricao"
+              name="descricao"
+              placeholder="Ex: Salário mensal"
+              [(ngModel)]="descricao"
+            />
+          </div>
+
+          <div class="campo">
+            <label for="tipo">Tipo</label>
+            <select name="tipo" id="tipo" [(ngModel)]="tipo">
+              <option value="RECEITA">Ganho</option>
+              <option value="DESPESA">Gasto</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="pagamento">Forma de pagamento</label>
+            <select name="pagamento" id="pagamento" [(ngModel)]="formaPagamento">
+              <option value="PIX">PIX</option>
+              <option value="DEBITO">Débito</option>
+              <option value="CREDITO">Crédito</option>
+              <option value="DINHEIRO">Dinheiro</option>
+              <option value="BOLETO">Boleto</option>
+            </select>
+          </div>
+
+          @if (formaPagamento === 'CREDITO') {
+            <div class="campo">
+              <label for="parcelas">Quantidade de parcelas</label>
+              <input
+                type="number"
+                name="parcelas"
+                id="parcelas"
+                min="1"
+                [(ngModel)]="quantidadeParcelas"
+              />
+            </div>
+          }
+        </div>
+
+        <div class="acoes">
+          <button type="button" class="botao-secundario" (click)="fecharFormulario()">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="botao-principal"
+            (click)="salvarFinanceiro()"
+            [disabled]="quantidadeParcelas < 1"
+          >
+            Salvar
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

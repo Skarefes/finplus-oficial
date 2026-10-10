@@ -1,0 +1,47 @@
+.config-cabecalho {
+  margin: 24px 0;
+}
+
+.config-cabecalho h1 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.zona-perigo {
+  padding: 20px;
+  border: 1px solid #f3c9c5;
+  border-radius: 20px;
+  background: #fff;
+}
+
+.zona-perigo h2 {
+  margin: 0 0 8px;
+  color: var(--coral);
+  font-size: 1.1rem;
+}
+
+.zona-perigo p {
+  margin: 0 0 16px;
+  color: #647783;
+  line-height: 1.5;
+}
+
+.config-erro {
+  color: var(--coral);
+  font-size: 0.875rem;
+}
+
+.botao-perigo {
+  border: 0;
+  border-radius: 12px;
+  padding: 13px 20px;
+  background: var(--coral);
+  color: #fff;
+  font-weight: 700;
+}
+
+.botao-perigo:hover {
+  filter: brightness(0.92);
+}
