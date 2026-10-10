@@ -1,4 +1,4 @@
 package com.yama.finplus.domain.login;
 
-public record LoginResponse(String token) {
+public record LoginResponse(String token, String username) {
 }
