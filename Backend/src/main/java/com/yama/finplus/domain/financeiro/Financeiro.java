@@ -38,7 +38,7 @@ public class Financeiro {
     @ManyToOne
     @JoinColumn(name = "cartao_id")
     private Cartao cartao;
-    //O relacionamento já é controlado pelo atributo financeiro que existe dentro de Parcelas
+    //O relacionamento ja e controlado pelo atributo financeiro que existe dentro de Parcelas
     @OneToMany(mappedBy = "financeiro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Parcela> parcelas;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

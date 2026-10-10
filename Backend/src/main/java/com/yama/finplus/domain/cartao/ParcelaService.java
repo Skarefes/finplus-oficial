@@ -23,10 +23,10 @@ public class ParcelaService {
         //calcular o valor de uma parcela
         List<Parcela> parcelas = new ArrayList<>();
         //pega o valor total do Financeiro e divide pela quantidade de parcelas para descobrir o valor de cada parcela.
-        //Iremos fazer com que seja limitado a 2 casas eusaremos o down porque queremos que a diferença fique para a última parcela
-        //roundingmode é um enum que define como um número deve ser arredondado quando uma operação matemática resulta em mais casas decimais, ou com mais precisao de valor
+        //Iremos fazer com que seja limitado a 2 casas eusaremos o down porque queremos que a diferença fique para a ultima parcela
+        //roundingmode é um enum que define como um número deve ser arredondado quando uma operacao matematica resulta em mais casas decimais, ou com mais precisao de valor
         BigDecimal valorParcela = financeiro.getValor().divide(BigDecimal.valueOf(quantidade), 2, RoundingMode.DOWN);
-        //valor distribuido começa com zero
+        //valor distribuido comeca com zero
         BigDecimal valorDistribuido = BigDecimal.ZERO;
         for (int i = 1; i <= quantidade; i++) {
             BigDecimal valorAtual = valorParcela;

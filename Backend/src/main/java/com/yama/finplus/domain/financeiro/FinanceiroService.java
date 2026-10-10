@@ -27,7 +27,7 @@ public class FinanceiroService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    //Função para colocar as transicoes de gastos e ganhos
+    //Funcao para colocar as transicoes de gastos e ganhos
     @Transactional
     public DadosDetalhamentoFinanceiro registrar(DadosCadastroFinanceiro dados, String email) {
 
@@ -35,19 +35,19 @@ public class FinanceiroService {
 
         Integer quantidade = dados.quantidadeParcelas();
 
-        //Se a quantidade for maior que 1 e a forma de pagamento não permitir parcelamento, gera uma exceção
+        //Se a quantidade for maior que 1 e a forma de pagamento nao permitir parcelamento, gera uma excecao
         if (dados.quantidadeParcelasFeitas() > 1 && !dados.formaPagamento().permiteParcelamento()){
             throw new FormaPagamentoNaoAutorizadaException("A forma de pagamento não permite parcelamento");
         }
 
         var financeiro = new Financeiro(dados);
 
-        //Vincula a transação ao usuario autenticado
+        //Vincula a transacao ao usuario autenticado
         financeiro.setUsuario(usuario);
 
         financeiroRepository.save(financeiro);
 
-        //Toda transação terá uma parcela, mesmo não precisando, ajudando na logica futura
+        //Toda transação tera uma parcela, mesmo nao precisando, ajudando na logica futura
         parcelaService.gerarParcelas(financeiro, quantidade);
         return new DadosDetalhamentoFinanceiro(financeiro);
     }
@@ -65,16 +65,16 @@ public class FinanceiroService {
     }
 
     @Transactional
-    //Função para editar um item
+    //Funcao para editar um item
     public DadosDetalhamentoFinanceiro editarDados(Long id, DadosAtualizacaoFinanceiro dados, String email) {
-        //identificador fincaneiro ele pega o repository do Financeiro que ja é o objeto pra poder editar
+        //identificador fincaneiro ele pega o repository do Financeiro que ja e o objeto pra poder editar
         var identificadorFinanceiro = financeiroRepository.findByIdAndUsuario_Email(id, email).orElseThrow();
         identificadorFinanceiro.atualizarDados(dados);
         //retorna um novo DTO com os novos dados
         return new DadosDetalhamentoFinanceiro(identificadorFinanceiro);
     }
 
-    //Função que deleta um item
+    //Funcao que deleta um item
     @Transactional
     public void removerDados(Long id, String email) {
         var financeiro = financeiroRepository

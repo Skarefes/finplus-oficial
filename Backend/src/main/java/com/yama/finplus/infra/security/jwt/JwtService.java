@@ -21,17 +21,17 @@ public class JwtService {
         this.secretKey = secrekey;
     }
 
-    //tempo de expiração do token = 1h
+    //tempo de expiracao do token = 1h
     private static final long EXPIRACAO_MS = 1000L * 60 * 60;
 
     public String gerarToken(UserDetails userDetails) {
         //Constroi uma JWT
         return Jwts.builder()
-                //Ele sabe que o username é importante, e vai criar um token do usuario
+                //Ele sabe que o username e importante, e vai criar um token do usuario
                 .subject(userDetails.getUsername()).issuedAt(new Date())
                 //Aqui é quando o token vai expirar, no caso é em milisegundos
                 .expiration(new Date(System.currentTimeMillis() + EXPIRACAO_MS))
-                //assinatura que o servidor lê para perceber alterações no token
+                //assinatura que o servidor lê para perceber alteracoes no token
                 .signWith(getKey())
                 .compact();
     }

@@ -18,7 +18,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    //Função de cadastro de usuario
+    //Funcao de cadastro de usuario
     public DadosDetalhamentoUsuario cadastrandoUsuario(DadosCadastroUsuario dados) {
         var usuario = new Usuario(dados);
         usuario.setSenha(passwordEncoder.encode(dados.senha()));

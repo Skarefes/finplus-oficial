@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws IOException, ServletException {
         String authHeader = request.getHeader("Authorization");
 
-        //captura e verifica no cabeçalho de autorização
+        //captura e verifica no cabecalho de autorizacao
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             //busca dos detahles do usuario no banco de dados
             UserDetails userDetails = usuarioDetailsService.loadUserByUsername(email);
 
-            //validação to Token, ele faz uma analise sobre o token se expirou
+            //validacao to Token, ele faz uma analise sobre o token se expirou
             // e se o email no token bate com o que o userDetails retorna pelo banco
             if (jwtService.validarToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authenticationToken =
@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
 
-        //passa a requisição para o próximo filtro na corrente, no caso o controller para processar o endpoint
+        //passa a requisicao para o proximo filtro na corrente, no caso o controller para processar o endpoint
         filterChain.doFilter(request, response);
 
 

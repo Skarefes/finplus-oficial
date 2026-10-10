@@ -19,7 +19,7 @@ public class ResumoFincanceiroService {
 
     }
 
-    //Função que vai somar as receitas e despesas totais, para cada usuario
+    //Funcao que vai somar as receitas e despesas totais, para cada usuario
     public DadosResumoFinanceiro somaTipos(String email) {
         BigDecimal receitas = Optional.ofNullable(financeiroRepository
                 .somarPorTipoEUsuario(TipoMovimentacao.RECEITA, email)).orElse(BigDecimal.ZERO);
@@ -30,7 +30,7 @@ public class ResumoFincanceiroService {
         return new DadosResumoFinanceiro(receitas, despesas);
     }
 
-    //Função que vai analisar o saldo total entre receita e despesas, para cada usuario
+    //Funcao que vai analisar o saldo total entre receita e despesas, para cada usuario
     public BigDecimal calcularSaldoTotal(String email) {
         DadosResumoFinanceiro resumo =  this.somaTipos(email);
         return resumo.totalReceita().subtract(resumo.totalDespesa());

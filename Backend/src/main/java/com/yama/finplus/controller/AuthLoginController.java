@@ -33,14 +33,14 @@ public class AuthLoginController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                //userPassAuthToken é um envelope que carrega as credenciais do usuario durante o login com o spring
+                //userPassAuthToken e um envelope que carrega as credenciais do usuario durante o login com o spring
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.senha())
         );
         //Agora criar a ponte que vai altenticar o usuario e o jwt e logar com o token
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = jwtService.gerarToken(userDetails);
 
-        //aqui o getUername() do spring é o email; com ele buscmaos o usuario, para pegar o nome
+        //aqui o getUername() do spring e o email; com ele buscmaos o usuario, para pegar o nome
         Usuario usuario = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario não encontrado"));
 
