@@ -12,9 +12,16 @@
 
     <form (ngSubmit)="enviar()">
       <div class="campos-grid">
+        @if (modoCadastro) {
+          <div class="campo">
+            <label for="username">Nome</label>
+            <input type="text" id="username" name="username" autocomplete="name" [(ngModel)]="username" required />
+          </div>
+        }
+
         <div class="campo">
           <label for="email">E-mail</label>
-          <input type="text" id="email" name="email" autocomplete="username" [(ngModel)]="email" required />
+          <input type="email" id="email" name="email" autocomplete="username" [(ngModel)]="email" required />
         </div>
 
         <div class="campo">
@@ -30,17 +37,33 @@
         </div>
       </div>
 
-      @if (erro) {
-        <p class="login-erro" role="alert">{{ erro }}</p>
+      @if (erro()) {
+        <p class="login-erro" role="alert">{{ erro() }}</p>
       }
 
-      <button type="submit" class="botao-principal login-botao" [disabled]="carregando || !email || !senha">
-        {{ carregando ? 'Aguarde...' : modoCadastro ? 'Criar conta' : 'Entrar' }}
+      <button
+        type="submit"
+        class="botao-principal login-botao"
+        [disabled]="carregando() || !email || !senha || (modoCadastro && !username)"
+      >
+        {{ carregando() ? 'Aguarde...' : modoCadastro ? 'Criar conta' : 'Entrar' }}
       </button>
     </form>
 
     <button type="button" class="login-alternar" (click)="alternarModo()">
       {{ modoCadastro ? 'Já tenho conta. Entrar' : 'Não tenho conta. Criar agora' }}
     </button>
+
+    @if (demorando()) {
+      <p class="aviso">O servidor está acordando, aguarde por favor...</p>
+    }
+
+    <div class="beta">
+      <span class="beta-selo">BETA</span>
+      <p class="beta-texto">
+        Estamos em fase de testes. Pode haver instabilidades e a primeira
+        entrada pode demorar um pouco. Seu feedback ajuda muito!
+      </p>
+    </div>
   </section>
 </main>

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DadosResumoFinanceiro } from '../models/dadosresumo-financeiro';
+import { environment } from '../../environments/environment';
 
 //Diz ao angular que esse service pode ser utilizado em toda aplicação
 @Injectable({
   providedIn: 'root',
 })
 export class ResumoFinanceiroService {
-  private apiUrl = 'http://localhost:8080/resumo';
+  private apiUrl = `${environment.apiUrl}/resumo`;
 
   constructor(private http: HttpClient){}
 

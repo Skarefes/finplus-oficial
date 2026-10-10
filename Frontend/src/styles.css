@@ -25,6 +25,8 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: 'Work Sans', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 button,

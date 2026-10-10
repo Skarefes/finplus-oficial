@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { DadosLogin, DadosToken } from '../models/dados-login';
 import { DadosCadastroUsuario } from '../models/dados-cadastro-usuario';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080';
+  private apiUrl = environment.apiUrl;
   private readonly CHAVE_TOKEN = 'finplus_token';
   private readonly CHAVE_NOME = 'finplus_nome'; // NOVO
 

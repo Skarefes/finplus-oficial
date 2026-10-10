@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DadosCadastroFinanceiro } from '../models/dadoscadastro-financeiro';
 import { DadosDetalhamentoFinanceiro } from '../models/dadosdetalhamento-financeiro';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinanceiroService {
-  private apiUrl = 'http://localhost:8080/financeiro'
+  private apiUrl = `${environment.apiUrl}/financeiro`;
 
   constructor(private http: HttpClient){}
 
