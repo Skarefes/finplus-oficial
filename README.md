@@ -44,17 +44,16 @@ Este projeto está sendo desenvolvido para estudos, uso pessoal, prática de des
 ✔ API REST utilizando Spring Boot
 ✔ Transações com @Transactional
 ✔ Testes com Postman
+✔ JWT Authentication
+✔ Dashboard financeiro
+✔ Integração entre frontend e backend
+✔ Exibir valor total da compra
 
 ## Futuras Implementações
-- JWT Authentication
-- Dashboard financeiro
 - Relatórios
 - Documentação
-- Integração entre frontend e backend
-
 - Adicionar entidade Cartão
 - Adicionar parcelamento de compras
-- Exibir valor total da compra
 - Exibir valor restante a pagar
 - Controlar parcelas pagas e pendentes
 - Adicionar dia de fechamento do cartão
