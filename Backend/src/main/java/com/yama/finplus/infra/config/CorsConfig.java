@@ -14,7 +14,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry){
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200", "https://localhost", "http://localhost")
+                        .allowedOrigins("http://localhost:4200",
+                                "https://localhost",
+                                "http://localhost",
+                                "https://finplus.pages.dev")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }
