@@ -1,5 +1,7 @@
 package com.yama.finplus.controller;
 
+import com.yama.finplus.domain.cartao.DadosDetalhamentoParcela;
+import com.yama.finplus.domain.cartao.ParcelaService;
 import com.yama.finplus.domain.financeiro.DadosAtualizacaoFinanceiro;
 import com.yama.finplus.domain.financeiro.DadosCadastroFinanceiro;
 import com.yama.finplus.domain.financeiro.DadosDetalhamentoFinanceiro;
@@ -22,10 +24,12 @@ public class FinanceiroController {
 
     private final FinanceiroService service;
     private final ResumoFincanceiroService resumo;
+    private final ParcelaService parcelaService;
 
-    public FinanceiroController(FinanceiroService service, ResumoFincanceiroService resumo) {
+    public FinanceiroController(FinanceiroService service, ResumoFincanceiroService resumo, ParcelaService parcelaService) {
         this.service = service;
         this.resumo = resumo;
+        this.parcelaService = parcelaService;
     }
 
     @PostMapping("/registrar")
@@ -65,5 +69,13 @@ public class FinanceiroController {
         String email = authentication.getName();
         service.removerDados(id, email);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/parcelas")
+    public ResponseEntity<List<DadosDetalhamentoParcela>> listarParcelas(@PathVariable Long id, Authentication authentication) {
+        String email = authentication.getName();
+        var parcelas = parcelaService.listarPorFinanceiro(id, email);
+
+        return ResponseEntity.ok(parcelas);
     }
 }

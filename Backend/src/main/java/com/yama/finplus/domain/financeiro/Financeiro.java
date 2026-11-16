@@ -54,6 +54,7 @@ public class Financeiro {
         this.descricao = dados.descricao();
         this.tipo = dados.tipo();
         this.formaPagamento = dados.formaPagamento();
+        this.categoria = dados.categoria();
     }
 
     public void atualizarDados(DadosAtualizacaoFinanceiro dados) {
@@ -71,6 +72,14 @@ public class Financeiro {
         }
         if (dados.tipo() != null){
             this.tipo = dados.tipo();
+        }
+
+        if (dados.categoria() != null){
+            this.categoria = dados.categoria();
+        }
+
+        if (dados.formaPagamento() != null){
+            this.formaPagamento = dados.formaPagamento();
         }
     }
 

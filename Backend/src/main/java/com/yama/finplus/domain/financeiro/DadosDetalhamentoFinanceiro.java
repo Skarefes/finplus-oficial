@@ -1,6 +1,9 @@
 package com.yama.finplus.domain.financeiro;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.yama.finplus.domain.cartao.Parcela;
+import com.yama.finplus.domain.financeiro.enums.Categoria;
+import com.yama.finplus.domain.financeiro.enums.FormaPagamento;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
 
 import java.math.BigDecimal;
@@ -12,10 +15,15 @@ public record DadosDetalhamentoFinanceiro(Long id,
                                           String descricao,
                                           @JsonFormat(pattern = "dd/MM/yyyy")
                                           LocalDateTime data,
-                                          TipoMovimentacao tipo) {
+                                          Categoria categoria,
+                                          TipoMovimentacao tipo,
+                                          FormaPagamento formaPagamento
+
+) {
 
     public DadosDetalhamentoFinanceiro(Financeiro financeiro){
         this(financeiro.getId(), financeiro.getNome(), financeiro.getValor(), financeiro.getDescricao(),
-                financeiro.getData(), financeiro.getTipo());
+                financeiro.getData(), financeiro.getCategoria(),
+                financeiro.getTipo(), financeiro.getFormaPagamento());
     }
 }

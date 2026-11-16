@@ -43,4 +43,9 @@ public class ParcelaService {
 
         parcelaRepository.saveAll((parcelas));
     }
+
+    public List<DadosDetalhamentoParcela> listarPorFinanceiro(Long idFinanceiro, String email) {
+        return parcelaRepository.findAllByFinanceiro_IdAndFinanceiro_Usuario_Email(idFinanceiro, email)
+                .stream().map(DadosDetalhamentoParcela::new).toList();
+    }
 }

@@ -33,7 +33,8 @@ public class FinanceiroService {
 
         Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Usuario não encontrado"));
 
-        Integer quantidade = dados.quantidadeParcelas();
+        //Integer quantidade = dados.quantidadeParcelas();
+        Integer quantidade = dados.quantidadeParcelasFeitas();
 
         //Se a quantidade for maior que 1 e a forma de pagamento nao permitir parcelamento, gera uma excecao
         if (dados.quantidadeParcelasFeitas() > 1 && !dados.formaPagamento().permiteParcelamento()){
