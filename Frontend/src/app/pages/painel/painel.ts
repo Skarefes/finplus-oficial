@@ -1,230 +1,95 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import { ResumoFinanceiroService } from '../../services/resumo-financeiro.service';
 import { FinanceiroService } from '../../services/financeiro.service';
-
-import { DadosDetalhamentoFinanceiro } from '../../models/dadosdetalhamento-financeiro';
-import { DadosCadastroFinanceiro } from '../../models/dadoscadastro-financeiro';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
-import { ParcelaService } from '../../services/parcela.service';
-import { DadosDetalhamentoParcela } from '../../models/dados-detalhamento-parcela';
+import { DadosDetalhamentoFinanceiro } from '../../models/dadosdetalhamento-financeiro';
+import { TransacaoForm } from '../../components/transacao-form/transacao-form';
 import { ParcelasModal } from '../../components/parcelas-modal/parcelas-modal';
 
 @Component({
   selector: 'app-painel',
-  imports: [CurrencyPipe, FormsModule, ParcelasModal],
+  imports: [CurrencyPipe, RouterLink, TransacaoForm, ParcelasModal],
   templateUrl: './painel.html',
   styleUrl: './painel.css',
 })
 export class Painel implements OnInit {
-
-  // A lógica financeira antiga será colocada aqui.
-  // Preserve os atributos e métodos do seu App antigo.
-
-  //Dados do formulário
-  nome = '';
-  valor = 0;
-  descricao = '';
-  tipo = 'DESPESA';
-  formaPagamento = 'PIX';
-  quantidadeParcelas = 1;
-  categoria = 'OUTROS';
-
-
-  constructor(
-    private resumoFinanceiro: ResumoFinanceiroService,
-    private financeiroService: FinanceiroService,
-    //private parcelaService: ParcelaService
-  ) {}
-
-  ngOnInit(): void {
-    this.atualizarResumo();
-
-    this.financeiroService.buscarFinanceiro().subscribe((financeiros) => {
-      this.financeiros.set(financeiros);
-    });
-  }
+  private resumoFinanceiro = inject(ResumoFinanceiroService);
+  private financeiroService = inject(FinanceiroService);
+  auth = inject(AuthService);
 
   totalReceita = signal(0);
   totalDespesa = signal(0);
   financeiros = signal<DadosDetalhamentoFinanceiro[]>([]);
 
-  abaAtiva = signal('visao-geral');
-  parcelas = signal<DadosDetalhamentoParcela[]>([]);
-  financeiroSelecionado = signal<DadosDetalhamentoFinanceiro | null>(null);
+  formularioAberto = signal(false);
+  financeiroEditando = signal<DadosDetalhamentoFinanceiro | null>(null); // null = criando
+  financeiroSelecionado = signal<DadosDetalhamentoFinanceiro | null>(null); // modal de parcelas
 
-  //funcionalidades
+  ganhosRecentes = computed(() =>
+    this.financeiros()
+      .filter((f) => f.tipo === 'RECEITA')
+      .sort((a, b) => b.id - a.id)
+      .slice(0, 5),
+  );
 
-  auth = inject(AuthService);
+  gastosRecentes = computed(() =>
+    this.financeiros()
+      .filter((f) => f.tipo === 'DESPESA')
+      .sort((a, b) => b.id - a.id)
+      .slice(0, 5),
+  );
 
-
-  // pega a 1ª palavra do nome e deixa a 1ª letra maiúscula: "roger silva" -> "Roger"
   primeiroNome = computed(() => {
-  const nome = this.auth.nomeUsuario().trim().split(' ')[0];
-  return nome.charAt(0).toUpperCase() + nome.slice(1);
+    const nome = this.auth.nomeUsuario().trim().split(' ')[0];
+    return nome.charAt(0).toUpperCase() + nome.slice(1);
   });
 
-  inicial = computed(() => this.primeiroNome().charAt(0));
+  ngOnInit(): void {
+    this.carregar();
+  }
 
-  //busque o resumo e podemos atualizar este resumo
-  atualizarResumo(): void {
+  carregar(): void {
     this.resumoFinanceiro.buscarResumo().subscribe((resumo) => {
       this.totalReceita.set(resumo.totalReceita);
       this.totalDespesa.set(resumo.totalDespesa);
     });
+
+    this.financeiroService.buscarFinanceiro().subscribe((lista) => this.financeiros.set(lista));
   }
 
-  //o financeiro esta editando agora? ajudando o angular entender se estou editando ou criando
-  financeiroEditando?:DadosDetalhamentoFinanceiro;
+  // ---------- ações ----------
+  abrirNovo() {
+    this.financeiroEditando.set(null);
+    this.formularioAberto.set(true);
+  }
 
-  mostrarFormulario = false;
-
-  abrirFormulario() {
-    this.limparFormulario()
-    this.mostrarFormulario = true;
+  abrirEdicao(f: DadosDetalhamentoFinanceiro) {
+    this.financeiroEditando.set(f);
+    this.formularioAberto.set(true);
   }
 
   fecharFormulario() {
-    this.mostrarFormulario = false;
+    this.formularioAberto.set(false);
+    this.financeiroEditando.set(null);
   }
 
-  //Dados Formulario
-  mostrarDados() {
-    console.log('Nome: ', this.nome);
-    console.log('Valor: ', this.valor);
-    console.log('Descrição: ', this.descricao);
-    console.log('Tipo: ', this.tipo);
-    console.log('Forma de Pagamento: ', this.formaPagamento);
-    console.log('Parcelas: ', this.quantidadeParcelas);
+  aoSalvar() {
+    this.fecharFormulario();
+    this.carregar(); // recarrega lista e totais
   }
 
-  //como tenho apenas um formulario, tanto para criar e editar tenho que ter um jeito de saber diferenciar os dois, e não ter problemas
-  salvarFinanceiro(){
-    if(this.financeiroEditando){
-      this.salvarEdicao();
-    } else {
-      this.criarFinanceiro();
-    }
-  }
-
-  //crio o novo financeiro
-  criarFinanceiro() {
-    const novoFinanceiro: DadosCadastroFinanceiro = {
-      nome: this.nome,
-      valor: this.valor,
-      descricao: this.descricao,
-      tipo: this.tipo,
-      formaPagamento: this.formaPagamento,
-      categoria: this.categoria,
-      quantidadeParcelas: this.quantidadeParcelas,
-    };
-
-    //atualiza os dados  da lista de ganhos e gastos
-    this.financeiroService.criarFinanceiro(novoFinanceiro).subscribe(() => {
-      console.log('Financeiro Criado!')
-      //atualiza a lista
-      this.financeiroService.buscarFinanceiro().subscribe((financeiros) => {
-        console.log('Lista recebida: ', financeiros)
-        this.financeiros.set(financeiros);
-        //atualiza os ganhos e gastos
-        this.atualizarResumo();
-        this.mostrarFormulario = false;
-        this.limparFormulario();
-      });
-    });
-
-    
-  }
-
-  editarFormulario(financeiro: DadosDetalhamentoFinanceiro) {
-    console.log("Forma de pagamento recebida? ", financeiro.formaPagamento);
-    console.log('Objeto completo: ', financeiro)
-
-    this.financeiroEditando = financeiro;
-
-    this.nome = financeiro.nome;
-    this.valor = financeiro.valor;
-    this.descricao = financeiro.descricao ?? '';
-    this.tipo = financeiro.tipo;
-    this.formaPagamento = financeiro.formaPagamento;
-    this.categoria = financeiro.categoria ?? 'OUTROS';
-    this.quantidadeParcelas = financeiro.quantidadeParcelas ?? 1;
-
-    this.mostrarFormulario = true;
-  }
-
-  //metodo que salva a edição que eu fiz em formulario
-  salvarEdicao() {
-    if (!this.financeiroEditando) {
+  excluir(id: number) {
+    if (!confirm('Deseja excluir esta transação?')) {
       return;
     }
-
-    const financeiroAtualizado: DadosCadastroFinanceiro = {
-      nome: this.nome,
-      valor: this.valor,
-      descricao: this.descricao,
-      tipo: this.tipo,
-      formaPagamento: this.formaPagamento,
-      categoria: this.categoria,
-      quantidadeParcelas: this.quantidadeParcelas,
-    };
-
-    this.financeiroService
-      .alterarFinanceiro(this.financeiroEditando.id, financeiroAtualizado).subscribe((resposta) => {
-        console.log('Financeiro alterado:', resposta);
-
-        //busca novamente os dados atualizados no banco
-        this.financeiroService.buscarFinanceiro().subscribe((financeiros) => {
-          this.financeiros.set(financeiros);
-            //atualiza os totais
-          this.atualizarResumo();
-
-            //fecha os formularios
-          this.mostrarFormulario = false
-
-            //limpa o financeiro antigo
-          this.financeiroEditando = undefined;
-
-            //limpa o formulario 
-          this.limparFormulario();
-        });
-      });
+    this.financeiroService.excluirFinanceiro(id).subscribe(() => this.carregar());
   }
 
-  excluirFinanceiro(id:number){
-    if(!confirm('Deseja excluir os dados?')){
-      return;
-    }
-
-    this.financeiroService.excluirFinanceiro(id).subscribe(() => {
-      console.log('Financeiro excluido')
-
-      //atualiza a lista
-      this.financeiroService.buscarFinanceiro().subscribe((financeiros) => {
-        this.financeiros.set(financeiros);
-        //atualiza tudo
-        this.atualizarResumo();
-      })
-    })
-  }
-
-  limparFormulario(){
-    this.nome= '';
-    this.valor = 0;
-    this.descricao = '';
-    this.tipo = 'DESPESA';
-    this.formaPagamento = 'PIX';
-    this.quantidadeParcelas = 1;
-    this.categoria = 'OUTROS';
-    this.financeiroEditando = undefined;
-  }
-
-
-  abrirParcelas(financeiro: DadosDetalhamentoFinanceiro) {
-    this.financeiroSelecionado.set(financeiro);
+  abrirParcelas(f: DadosDetalhamentoFinanceiro) {
+    this.financeiroSelecionado.set(f);
   }
 
   fecharParcelas() {

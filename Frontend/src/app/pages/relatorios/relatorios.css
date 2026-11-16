@@ -9,6 +9,10 @@
   background: #fff;
 }
 
+.grafico-secao {
+  margin-bottom: 28px;
+}
+
 /* o círculo colorido; o "furo" por cima vira rosca */
 .pizza {
   display: grid;
@@ -79,32 +83,11 @@
   font-weight: 600;
 }
 
-.lista-gastos {
-  margin-top: 28px;
-}
-
 :host{
     display: block;
 }
 
-/* o item vira botão: remove o visual padrão de botão */
-.item-clicavel {
-  width: 100%;
-  border: 0;
-  border-bottom: 1px solid #edf0f2; /* mantém a divisória */
-  background: transparent;
-  text-align: left;
-  font: inherit;
-  cursor: pointer;
-}
 
-.item-clicavel:last-child {
-  border-bottom: 0;
-}
-
-.vazio {
-  color: var(--muted);
-}
 
 /* celular = base; em tela maior a pizza fica ao lado da legenda */
 @media (min-width: 640px) {

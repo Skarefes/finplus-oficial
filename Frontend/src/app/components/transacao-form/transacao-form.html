@@ -1,0 +1,90 @@
+<div class="modal-fundo" (click)="fechar.emit()">
+  <section
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="form-titulo"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="modal-topo">
+      <div>
+        <span class="subtitulo">{{ editando ? 'Editar' : 'Nova movimentação' }}</span>
+        <h2 id="form-titulo">{{ editando ? 'Editar transação' : 'Adicionar transação' }}</h2>
+      </div>
+      <button type="button" class="botao-fechar" aria-label="Fechar" (click)="fechar.emit()">✕</button>
+    </div>
+
+    <form>
+      <div class="campos-grid">
+        <div class="campo">
+          <label for="nome">Nome</label>
+          <input type="text" name="nome" id="nome" placeholder="Ex: Salário" [(ngModel)]="nome" />
+        </div>
+
+        <div class="campo">
+          <label for="valor">Valor (R$)</label>
+          <input type="number" id="valor" name="valor" placeholder="0,00" [(ngModel)]="valor" />
+        </div>
+
+        <div class="campo campo-completo">
+          <label for="descricao">Descrição</label>
+          <input type="text" id="descricao" name="descricao" placeholder="Ex: Salário mensal" [(ngModel)]="descricao" />
+        </div>
+
+        <div class="campo">
+          <label for="tipo">Tipo</label>
+          <select name="tipo" id="tipo" [(ngModel)]="tipo">
+            <option value="RECEITA">Ganho</option>
+            <option value="DESPESA">Gasto</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="categoria">Categoria</label>
+          <select name="categoria" id="categoria" [(ngModel)]="categoria">
+            <option value="ALIMENTO">Alimentação</option>
+            <option value="TRANSPORTE">Transporte</option>
+            <option value="LAZER">Lazer</option>
+            <option value="SAUDE">Saúde</option>
+            <option value="OBJETO">Objeto</option>
+            <option value="OUTROS">Outros</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="pagamento">Forma de pagamento</label>
+          <select name="pagamento" id="pagamento" [(ngModel)]="formaPagamento">
+            <option value="PIX">PIX</option>
+            <option value="DEBITO">Débito</option>
+            <option value="CREDITO">Crédito</option>
+            <option value="DINHEIRO">Dinheiro</option>
+            <option value="BOLETO">Boleto</option>
+          </select>
+        </div>
+
+        @if (!editando && permiteParcelar) {
+          <div class="campo">
+            <label for="parcelas">Quantidade de parcelas</label>
+            <input type="number" name="parcelas" id="parcelas" min="1" [(ngModel)]="quantidadeParcelas" />
+          </div>
+        }
+      </div>
+
+      @if (erro()) {
+        <p class="erro" role="alert">{{ erro() }}</p>
+      }
+
+      <div class="acoes">
+        <button type="button" class="botao-secundario" (click)="fechar.emit()">Cancelar</button>
+        <button
+          type="button"
+          class="botao-principal"
+          (click)="salvar()"
+          [disabled]="salvando() || quantidadeParcelas < 1"
+        >
+          {{ salvando() ? 'Salvando...' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

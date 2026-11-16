@@ -3,8 +3,8 @@ import { CurrencyPipe } from '@angular/common';
 import { FinanceiroService } from '../../services/financeiro.service';
 import { DadosDetalhamentoFinanceiro } from '../../models/dadosdetalhamento-financeiro';
 import { ParcelasModal } from '../../components/parcelas-modal/parcelas-modal';
+import { TransacaoForm } from '../../components/transacao-form/transacao-form';
 
-// nome amigável + cor de cada categoria num lugar só
 const CATEGORIAS: Record<string, { nome: string; cor: string }> = {
   ALIMENTO: { nome: 'Alimentação', cor: '#198b69' },
   TRANSPORTE: { nome: 'Transporte', cor: '#4b9bc0' },
@@ -16,7 +16,7 @@ const CATEGORIAS: Record<string, { nome: string; cor: string }> = {
 
 @Component({
   selector: 'app-relatorios',
-  imports: [CurrencyPipe, ParcelasModal],
+  imports: [CurrencyPipe, ParcelasModal, TransacaoForm],
   templateUrl: './relatorios.html',
   styleUrl: './relatorios.css',
 })
@@ -24,23 +24,30 @@ export class Relatorios implements OnInit {
   private financeiroService = inject(FinanceiroService);
 
   financeiros = signal<DadosDetalhamentoFinanceiro[]>([]);
-  financeiroSelecionado = signal<DadosDetalhamentoFinanceiro | null>(null);
+  financeiroSelecionado = signal<DadosDetalhamentoFinanceiro | null>(null); // modal de parcelas
+  formularioAberto = signal(false);
+  financeiroEditando = signal<DadosDetalhamentoFinanceiro | null>(null);    // null = criando
 
   ngOnInit(): void {
+    this.carregar();
+  }
+
+  carregar(): void {
     this.financeiroService.buscarFinanceiro().subscribe((lista) => this.financeiros.set(lista));
   }
 
-  despesas = computed(() => this.financeiros().filter((f) => f.tipo === 'DESPESA'));
-
-  totalReceita = computed(() =>
-    this.financeiros()
-      .filter((f) => f.tipo === 'RECEITA')
-      .reduce((soma, f) => soma + f.valor, 0),
+  // mais recentes primeiro
+  ganhos = computed(() =>
+    this.financeiros().filter((f) => f.tipo === 'RECEITA').sort((a, b) => b.id - a.id),
   );
+  despesas = computed(() =>
+    this.financeiros().filter((f) => f.tipo === 'DESPESA').sort((a, b) => b.id - a.id),
+  );
+
+  totalReceita = computed(() => this.ganhos().reduce((soma, f) => soma + f.valor, 0));
   totalDespesa = computed(() => this.despesas().reduce((soma, f) => soma + f.valor, 0));
   saldo = computed(() => this.totalReceita() - this.totalDespesa());
 
-  // soma os gastos por categoria e calcula a % de cada uma
   gastosPorCategoria = computed(() => {
     const total = this.totalDespesa();
     const somas = new Map<string, number>();
@@ -60,7 +67,6 @@ export class Relatorios implements OnInit {
       .sort((a, b) => b.valor - a.valor);
   });
 
-  // monta: conic-gradient(cor1 0% 40%, cor2 40% 70%, ...)
   gradiente = computed(() => {
     let inicio = 0;
     const partes = this.gastosPorCategoria().map((c) => {
@@ -72,8 +78,32 @@ export class Relatorios implements OnInit {
     return `conic-gradient(${partes.join(', ')})`;
   });
 
-  nomeCategoria(chave?: string) {
-    return CATEGORIAS[chave ?? 'OUTROS']?.nome ?? chave;
+  // ---------- ações ----------
+  abrirNovo() {
+    this.financeiroEditando.set(null);
+    this.formularioAberto.set(true);
+  }
+
+  abrirEdicao(f: DadosDetalhamentoFinanceiro) {
+    this.financeiroEditando.set(f);
+    this.formularioAberto.set(true);
+  }
+
+  fecharFormulario() {
+    this.formularioAberto.set(false);
+    this.financeiroEditando.set(null);
+  }
+
+  aoSalvar() {
+    this.fecharFormulario();
+    this.carregar();
+  }
+
+  excluir(id: number) {
+    if (!confirm('Deseja excluir esta transação?')) {
+      return;
+    }
+    this.financeiroService.excluirFinanceiro(id).subscribe(() => this.carregar());
   }
 
   abrirParcelas(f: DadosDetalhamentoFinanceiro) {

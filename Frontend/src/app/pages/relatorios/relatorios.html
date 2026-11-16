@@ -3,8 +3,10 @@
     <div class="boas-vindas-texto">
       <span class="subtitulo">Relatórios</span>
       <h1>Para onde está indo seu dinheiro</h1>
-      <p>Totais, gastos por categoria e parcelas.</p>
+      <p>Totais, gastos por categoria e todas as suas transações.</p>
     </div>
+
+    <button type="button" class="botao-principal" (click)="abrirNovo()">Adicionar transação</button>
   </section>
 
   <section class="resumo" aria-label="Totais">
@@ -55,24 +57,88 @@
     }
   </section>
 
-  <section class="lista-gastos">
-    <div class="titulo-secao"><h2>Detalhe dos gastos</h2></div>
-    <div class="bloco">
-      @for (d of despesas(); track d.id) {
-        <button type="button" class="item item-clicavel" (click)="abrirParcelas(d)">
-          <div class="descricao">
-            <strong>{{ d.nome }}</strong>
-            <small>{{ nomeCategoria(d.categoria) }} · {{ d.formaPagamento }}</small>
+  <section class="movimentacoes">
+    <div class="titulo-secao">
+      <div>
+        <span class="subtitulo">Todas as transações</span>
+        <h2>Detalhamento</h2>
+      </div>
+      <span class="contador">{{ financeiros().length }} registros</span>
+    </div>
+
+    <div class="listas">
+      <!-- Ganhos -->
+      <div class="bloco">
+        <div class="bloco-titulo">
+          <div class="titulo-tipo receita"><span aria-hidden="true">↑</span><h3>Ganhos</h3></div>
+        </div>
+
+        @for (f of ganhos(); track f.id) {
+          <div class="item">
+            <div class="item-info">
+              <div class="item-icone receita" aria-hidden="true">↑</div>
+              <div class="descricao">
+                <strong>{{ f.nome }}</strong>
+                <small>{{ f.descricao }}</small>
+              </div>
+            </div>
+            <div class="item-direita">
+              <strong class="valor receita">
+                {{ f.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+              </strong>
+              <div class="item-acoes">
+                <button type="button" (click)="abrirEdicao(f)">Editar</button>
+                <button type="button" class="perigo" (click)="excluir(f.id)">Excluir</button>
+              </div>
+            </div>
           </div>
-          <strong class="valor despesa">
-            {{ d.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
-          </strong>
-        </button>
-      }
+        } @empty {
+          <p class="vazio">Nenhum ganho ainda.</p>
+        }
+      </div>
+
+      <!-- Gastos -->
+      <div class="bloco">
+        <div class="bloco-titulo">
+          <div class="titulo-tipo despesa"><span aria-hidden="true">↓</span><h3>Gastos</h3></div>
+        </div>
+
+        @for (f of despesas(); track f.id) {
+          <div class="item">
+            <div class="item-info">
+              <div class="item-icone despesa" aria-hidden="true">↓</div>
+              <div class="descricao">
+                <strong>{{ f.nome }}</strong>
+                <small>{{ f.descricao }}</small>
+              </div>
+            </div>
+            <div class="item-direita">
+              <strong class="valor despesa">
+                {{ f.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+              </strong>
+              <div class="item-acoes">
+                <button type="button" (click)="abrirParcelas(f)">Parcelas</button>
+                <button type="button" (click)="abrirEdicao(f)">Editar</button>
+                <button type="button" class="perigo" (click)="excluir(f.id)">Excluir</button>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <p class="vazio">Nenhum gasto ainda.</p>
+        }
+      </div>
     </div>
   </section>
 </main>
 
 @if (financeiroSelecionado(); as selecionado) {
   <app-parcelas-modal [financeiro]="selecionado" (fechar)="fecharParcelas()" />
+}
+
+@if (formularioAberto()) {
+  <app-transacao-form
+    [financeiro]="financeiroEditando()"
+    (salvo)="aoSalvar()"
+    (fechar)="fecharFormulario()"
+  />
 }
