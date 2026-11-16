@@ -4,5 +4,6 @@ export interface DadosCadastroFinanceiro {
     descricao?: string;
     tipo: string;
     formaPagamento: string;
+    categoria: string
     quantidadeParcelas?: number;
 }

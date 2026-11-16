@@ -9,10 +9,13 @@ import { DadosDetalhamentoFinanceiro } from '../../models/dadosdetalhamento-fina
 import { DadosCadastroFinanceiro } from '../../models/dadoscadastro-financeiro';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { ParcelaService } from '../../services/parcela.service';
+import { DadosDetalhamentoParcela } from '../../models/dados-detalhamento-parcela';
+import { ParcelasModal } from '../../components/parcelas-modal/parcelas-modal';
 
 @Component({
   selector: 'app-painel',
-  imports: [CurrencyPipe, FormsModule],
+  imports: [CurrencyPipe, FormsModule, ParcelasModal],
   templateUrl: './painel.html',
   styleUrl: './painel.css',
 })
@@ -28,11 +31,13 @@ export class Painel implements OnInit {
   tipo = 'DESPESA';
   formaPagamento = 'PIX';
   quantidadeParcelas = 1;
+  categoria = 'OUTROS';
 
 
   constructor(
     private resumoFinanceiro: ResumoFinanceiroService,
     private financeiroService: FinanceiroService,
+    //private parcelaService: ParcelaService
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +51,10 @@ export class Painel implements OnInit {
   totalReceita = signal(0);
   totalDespesa = signal(0);
   financeiros = signal<DadosDetalhamentoFinanceiro[]>([]);
+
+  abaAtiva = signal('visao-geral');
+  parcelas = signal<DadosDetalhamentoParcela[]>([]);
+  financeiroSelecionado = signal<DadosDetalhamentoFinanceiro | null>(null);
 
   //funcionalidades
 
@@ -109,6 +118,7 @@ export class Painel implements OnInit {
       descricao: this.descricao,
       tipo: this.tipo,
       formaPagamento: this.formaPagamento,
+      categoria: this.categoria,
       quantidadeParcelas: this.quantidadeParcelas,
     };
 
@@ -130,6 +140,9 @@ export class Painel implements OnInit {
   }
 
   editarFormulario(financeiro: DadosDetalhamentoFinanceiro) {
+    console.log("Forma de pagamento recebida? ", financeiro.formaPagamento);
+    console.log('Objeto completo: ', financeiro)
+
     this.financeiroEditando = financeiro;
 
     this.nome = financeiro.nome;
@@ -137,6 +150,7 @@ export class Painel implements OnInit {
     this.descricao = financeiro.descricao ?? '';
     this.tipo = financeiro.tipo;
     this.formaPagamento = financeiro.formaPagamento;
+    this.categoria = financeiro.categoria ?? 'OUTROS';
     this.quantidadeParcelas = financeiro.quantidadeParcelas ?? 1;
 
     this.mostrarFormulario = true;
@@ -154,6 +168,7 @@ export class Painel implements OnInit {
       descricao: this.descricao,
       tipo: this.tipo,
       formaPagamento: this.formaPagamento,
+      categoria: this.categoria,
       quantidadeParcelas: this.quantidadeParcelas,
     };
 
@@ -203,9 +218,16 @@ export class Painel implements OnInit {
     this.tipo = 'DESPESA';
     this.formaPagamento = 'PIX';
     this.quantidadeParcelas = 1;
-
+    this.categoria = 'OUTROS';
     this.financeiroEditando = undefined;
   }
 
-}
 
+  abrirParcelas(financeiro: DadosDetalhamentoFinanceiro) {
+    this.financeiroSelecionado.set(financeiro);
+  }
+
+  fecharParcelas() {
+    this.financeiroSelecionado.set(null);
+  }
+}

@@ -2,12 +2,14 @@ import { Routes } from '@angular/router';
 import { Login } from './pages/login/login'; 
 import { Painel } from './pages/painel/painel'; 
 import { Configuracoes } from './pages/configuracoes/configuracoes'; 
+import { Relatorios } from './pages/relatorios/relatorios';
 import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
 
     { path: 'login', component: Login }, 
     { path: '', component: Painel, canActivate: [authGuard] }, 
+    { path: 'relatorios', component: Relatorios, canActivate: [authGuard] },
     { path: 'configuracoes', component: Configuracoes, canActivate: [authGuard] },
     { path: '**', redirectTo: '' }
 

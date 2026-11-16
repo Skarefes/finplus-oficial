@@ -32,6 +32,8 @@
       </button>
     </section>
 
+    
+
     <!-- Cards de resumo -->
     <section class="resumo" aria-label="Resumo do saldo">
       <div class="card card-saldo">
@@ -104,6 +106,7 @@
                     {{ financeiro.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
                   </strong>
                   <div class="item-acoes">
+                    <button type="button" (click)="abrirParcelas(financeiro)">Parcelas</button>
                     <button type="button" (click)="editarFormulario(financeiro)">Editar</button>
                     <button type="button" (click)="excluirFinanceiro(financeiro.id)">Excluir</button>
                   </div>
@@ -138,6 +141,7 @@
                     {{ financeiro.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
                   </strong>
                   <div class="item-acoes">
+                    <button type="button" (click)="abrirParcelas(financeiro)">Parcelas</button>
                     <button type="button" (click)="editarFormulario(financeiro)">Editar</button>
                     <button type="button" (click)="excluirFinanceiro(financeiro.id)">Excluir</button>
                   </div>
@@ -201,6 +205,18 @@
           </div>
 
           <div class="campo">
+            <label for="categoria">Categoria</label>
+            <select name="categoria" id="categoria" [(ngModel)]="categoria">
+              <option value="ALIMENTO">Alimentação</option>
+              <option value="TRANSPORTE">Transporte</option>
+              <option value="LAZER">Lazer</option>
+              <option value="SAUDE">Saúde</option>
+              <option value="OBJETO">Objeto</option>
+              <option value="OUTROS">Outros</option>
+            </select>
+          </div>
+
+          <div class="campo">
             <label for="tipo">Tipo</label>
             <select name="tipo" id="tipo" [(ngModel)]="tipo">
               <option value="RECEITA">Ganho</option>
@@ -249,4 +265,8 @@
       </form>
     </section>
   </div>
+}
+
+@if (financeiroSelecionado(); as selecionado) {
+  <app-parcelas-modal [financeiro]="selecionado" (fechar)="fecharParcelas()" />
 }

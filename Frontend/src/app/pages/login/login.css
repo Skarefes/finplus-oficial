@@ -99,3 +99,32 @@
   line-height: 1.4;
   color: #9a3412;
 }
+
+.login-carregando {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f4f8fb;
+  color: var(--navy);
+  font-size: 0.85rem;
+}
+
+.login-carregando p { margin: 0; }
+
+.spinner {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--line);
+  border-top-color: var(--navy);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}

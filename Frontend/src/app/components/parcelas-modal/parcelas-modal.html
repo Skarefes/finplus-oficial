@@ -1,0 +1,35 @@
+<div class="modal-fundo" (click)="fechar.emit()">
+  <section
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="parcelas-titulo"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="modal-topo">
+      <div>
+        <span class="subtitulo">{{ financeiro().formaPagamento }}</span>
+        <h2 id="parcelas-titulo">{{ financeiro().nome }}</h2>
+        <p class="total">
+          Total: {{ financeiro().valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+        </p>
+      </div>
+      <button type="button" class="botao-fechar" aria-label="Fechar" (click)="fechar.emit()">✕</button>
+    </div>
+
+    @if (carregando()) {
+      <p class="aviso">Carregando parcelas...</p>
+    } @else if (erro()) {
+      <p class="aviso">Não foi possível carregar as parcelas.</p>
+    } @else {
+      <ul class="lista-parcelas">
+        @for (p of parcelas(); track p.id) {
+          <li>
+            <span>Parcela {{ p.numeroParcela }}/{{ p.totalParcela }}</span>
+            <strong>{{ p.valorParcela | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</div>

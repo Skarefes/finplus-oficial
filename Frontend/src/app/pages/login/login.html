@@ -54,8 +54,11 @@
       {{ modoCadastro ? 'Já tenho conta. Entrar' : 'Não tenho conta. Criar agora' }}
     </button>
 
-    @if (demorando()) {
-      <p class="aviso">O servidor está acordando, aguarde por favor...</p>
+    @if (carregando()) {
+      <div class="login-carregando" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <p>{{mensagemEspera()}}</p>
+      </div>
     }
 
     <div class="beta">

@@ -74,4 +74,10 @@ export class AuthService {
       return null;
     }
   }
+
+  acordarServidor(){
+    // no-cors: não precisamos da resposta, só queremos que a requisição CHEGUE no Render.
+    // Mesmo que volte 401/405/404, o servidor já foi acordado.
+    fetch(`${environment.apiUrl}/auth/login`, { mode: 'no-cors' }).catch(() => {});
+  }
 }

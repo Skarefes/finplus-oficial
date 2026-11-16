@@ -9,5 +9,7 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.css',
 })
 export class App {
-  constructor(protected auth: AuthService){}
+  constructor(protected auth: AuthService){
+    this.auth.acordarServidor();
+  }
 }

@@ -1,0 +1,121 @@
+.grafico-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+}
+
+/* o círculo colorido; o "furo" por cima vira rosca */
+.pizza {
+  display: grid;
+  place-items: center;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.pizza-furo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--navy);
+}
+
+.pizza-furo small {
+  color: var(--muted);
+}
+
+.legenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.legenda li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #edf0f2;
+}
+
+.legenda li:last-child {
+  border-bottom: 0;
+}
+
+.bolinha {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.legenda-nome {
+  flex: 1;
+  color: #284553;
+  font-weight: 600;
+}
+
+.legenda-valor {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.legenda-valor small {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.lista-gastos {
+  margin-top: 28px;
+}
+
+:host{
+    display: block;
+}
+
+/* o item vira botão: remove o visual padrão de botão */
+.item-clicavel {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #edf0f2; /* mantém a divisória */
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.item-clicavel:last-child {
+  border-bottom: 0;
+}
+
+.vazio {
+  color: var(--muted);
+}
+
+/* celular = base; em tela maior a pizza fica ao lado da legenda */
+@media (min-width: 640px) {
+  .grafico-layout {
+    flex-direction: row;
+    justify-content: center;
+    gap: 48px;
+    padding: 32px;
+  }
+
+  .legenda {
+    max-width: 360px;
+  }
+}

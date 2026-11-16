@@ -5,5 +5,6 @@ export interface DadosDetalhamentoFinanceiro {
     descricao?: string;
     tipo: string;
     formaPagamento: string;
+    categoria: string;
     quantidadeParcelas?: number;
 }

@@ -19,8 +19,9 @@ export class Login {
   erro = signal('');
   carregando = signal(false);
   demorando = signal(false);
+  mensagemEspera = signal("Conectando ao servidor...")
 
-  private temporizador: any;
+  private temporizadores: any[] = [];
 
   constructor(
     private auth: AuthService,
@@ -74,14 +75,16 @@ export class Login {
 
   private iniciarEspera() {
     this.carregando.set(true);
-    this.demorando.set(false);
-    clearTimeout(this.temporizador);
-    this.temporizador = setTimeout(() => this.demorando.set(true), 4000);
+    this.mensagemEspera.set('Conectando ao servidor...');
+    this.temporizadores.forEach(clearTimeout);
+    this.temporizadores = [
+      setTimeout(() => this.mensagemEspera.set('O servidor esta acordando, pode levar um tempo.., espere por favor'), 4000),
+      setTimeout(() => this.mensagemEspera.set("Quase lá! Só mais um instante..."), 30000),
+    ];
   }
 
   private pararEspera() {
-    clearTimeout(this.temporizador);
+    this.temporizadores.forEach(clearTimeout);
     this.carregando.set(false);
-    this.demorando.set(false);
   }
 }

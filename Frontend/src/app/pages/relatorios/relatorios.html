@@ -1,0 +1,78 @@
+<main>
+  <section class="boas-vindas">
+    <div class="boas-vindas-texto">
+      <span class="subtitulo">Relatórios</span>
+      <h1>Para onde está indo seu dinheiro</h1>
+      <p>Totais, gastos por categoria e parcelas.</p>
+    </div>
+  </section>
+
+  <section class="resumo" aria-label="Totais">
+    <div class="card card-saldo">
+      <div class="card-cabecalho"><span>Saldo</span><span class="icone" aria-hidden="true">R$</span></div>
+      <h3>{{ saldo() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+      <small>Ganhos menos gastos</small>
+    </div>
+    <div class="card card-receita">
+      <div class="card-cabecalho"><span>Ganhos</span><span class="icone" aria-hidden="true">↑</span></div>
+      <h3>{{ totalReceita() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+      <small>Total de ganhos</small>
+    </div>
+    <div class="card card-despesa">
+      <div class="card-cabecalho"><span>Gastos</span><span class="icone" aria-hidden="true">↓</span></div>
+      <h3>{{ totalDespesa() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+      <small>Total de gastos</small>
+    </div>
+  </section>
+
+  <section class="grafico-secao">
+    <div class="titulo-secao"><h2>Gastos por categoria</h2></div>
+
+    @if (gastosPorCategoria().length === 0) {
+      <p class="vazio">Você ainda não tem gastos cadastrados.</p>
+    } @else {
+      <div class="grafico-layout">
+        <div class="pizza" [style.background]="gradiente()" role="img" aria-label="Gráfico de gastos por categoria">
+          <div class="pizza-furo">
+            <small>Total</small>
+            <strong>{{ totalDespesa() | currency: 'BRL' : 'symbol' : '1.0-0' : 'pt-BR' }}</strong>
+          </div>
+        </div>
+
+        <ul class="legenda">
+          @for (c of gastosPorCategoria(); track c.nome) {
+            <li>
+              <span class="bolinha" [style.background]="c.cor"></span>
+              <span class="legenda-nome">{{ c.nome }}</span>
+              <span class="legenda-valor">
+                {{ c.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                <small>{{ c.percentual.toFixed(0) }}%</small>
+              </span>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </section>
+
+  <section class="lista-gastos">
+    <div class="titulo-secao"><h2>Detalhe dos gastos</h2></div>
+    <div class="bloco">
+      @for (d of despesas(); track d.id) {
+        <button type="button" class="item item-clicavel" (click)="abrirParcelas(d)">
+          <div class="descricao">
+            <strong>{{ d.nome }}</strong>
+            <small>{{ nomeCategoria(d.categoria) }} · {{ d.formaPagamento }}</small>
+          </div>
+          <strong class="valor despesa">
+            {{ d.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+          </strong>
+        </button>
+      }
+    </div>
+  </section>
+</main>
+
+@if (financeiroSelecionado(); as selecionado) {
+  <app-parcelas-modal [financeiro]="selecionado" (fechar)="fecharParcelas()" />
+}
