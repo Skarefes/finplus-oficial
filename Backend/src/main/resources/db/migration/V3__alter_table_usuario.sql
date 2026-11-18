@@ -1,0 +1,2 @@
+ALTER TABLE usuario
+    ADD COLUMN IF NOT EXISTS teto_mensal NUMERIC(12,2);
