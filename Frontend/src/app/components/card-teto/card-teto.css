@@ -1,0 +1,86 @@
+/* O item da grid do .resumo é o <app-card-teto> (o "host"), não o .card de dentro.
+   Por isso o grid-column vai AQUI: o card ocupa a linha toda, 
+   como uma faixa. */
+
+:host {
+  display: block;
+  grid-column: 1 / -1;
+}
+
+:host(.compacto){
+  grid-column: 1 / -1;
+}
+
+.card-teto .icone { background: var(--verde-suave); color: var(--verde); }
+.card-teto::after { background: #b9e7d6; }
+
+.card-teto.estourou .icone { background: var(--coral-suave); color: var(--coral); }
+.card-teto.estourou::after { background: #f7c6c1; }
+
+.barra {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5eaec;
+}
+
+.barra-preenchida {
+  height: 100%;
+  background: var(--verde);
+  transition: width 0.3s ease;
+}
+
+.status {
+  margin: 10px 0 0;
+  color: var(--verde);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.estourou .barra-preenchida { background: var(--coral); }
+.estourou .status { color: var(--coral); }
+
+.edicao { margin-top: 12px; }
+
+.acoes-teto {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.definir { display: block; margin-top: 12px; }
+
+.link-acao {
+  display: block;
+  margin-top: 10px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #7b8790;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.link-acao:hover { color: var(--navy); }
+
+/* ...mas em tela maior vira um card comum, do tamanho dos outros */
+@media (min-width: 768px) {
+  :host(.compacto) {
+    grid-column: auto;
+  }
+}
+
+/* no card compacto o status fica na cor da situação */
+.status-curto {
+  display: block;
+  color: var(--verde);
+  font-weight: 600;
+}
+
+.estourou .status-curto { color: var(--coral); }
+
+/* o link é um <a>, então tira o sublinhado */
+a.link-acao {
+  text-decoration: none;
+}

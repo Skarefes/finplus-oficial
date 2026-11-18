@@ -1,0 +1,34 @@
+<div class="seletor-mes">
+  <button type="button" class="seta" (click)="deslocar(-1)" aria-label="Mês anterior">‹</button>
+
+  <button type="button" class="mes-atual" (click)="alternar()" [attr.aria-expanded]="aberto()">
+    {{ titulo() }} <span aria-hidden="true">▾</span>
+  </button>
+
+  <button type="button" class="seta" (click)="deslocar(1)" aria-label="Próximo mês">›</button>
+
+  @if (aberto()) {
+    <!-- camada invisível: clicar fora fecha o painel -->
+    <div class="fundo-popover" (click)="aberto.set(false)"></div>
+
+    <div class="popover" role="dialog" aria-label="Escolher mês">
+      <div class="popover-ano">
+        <button type="button" class="seta" (click)="mudarAno(-1)" aria-label="Ano anterior">‹</button>
+        <strong>{{ anoExibido() }}</strong>
+        <button type="button" class="seta" (click)="mudarAno(1)" aria-label="Próximo ano">›</button>
+      </div>
+
+      <div class="grade-meses">
+        @for (nome of meses; track $index) {
+          <button
+            type="button"
+            [class.ativo]="$index + 1 === periodo.mes() && anoExibido() === periodo.ano()"
+            (click)="escolher($index)"
+          >
+            {{ nome }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

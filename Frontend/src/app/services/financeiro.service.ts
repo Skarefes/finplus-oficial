@@ -33,4 +33,11 @@ export class FinanceiroService {
   excluirFinanceiro(id: number){
     return this.http.delete(`${this.apiUrl}/${id}`)
   }
+
+  buscarFinanceiroPorMes(mes: number, ano: number) {
+    return this.http.get<DadosDetalhamentoFinanceiro[]>(
+      `${this.apiUrl}/mensal`,
+      { params: { mes, ano } },
+    );
+  }
 }

@@ -8,16 +8,20 @@ import { AuthService } from '../../services/auth.service';
 import { DadosDetalhamentoFinanceiro } from '../../models/dadosdetalhamento-financeiro';
 import { TransacaoForm } from '../../components/transacao-form/transacao-form';
 import { ParcelasModal } from '../../components/parcelas-modal/parcelas-modal';
+import { SeletorMes } from '../../components/seletor-mes/seletor-mes';
+import { CardTeto } from '../../components/card-teto/card-teto';
+import { PeriodoService } from '../../services/periodo.service';
 
 @Component({
   selector: 'app-painel',
-  imports: [CurrencyPipe, RouterLink, TransacaoForm, ParcelasModal],
+  imports: [CurrencyPipe, RouterLink, TransacaoForm, ParcelasModal, SeletorMes, CardTeto],
   templateUrl: './painel.html',
   styleUrl: './painel.css',
 })
 export class Painel implements OnInit {
   private resumoFinanceiro = inject(ResumoFinanceiroService);
   private financeiroService = inject(FinanceiroService);
+  private periodo = inject(PeriodoService)
   auth = inject(AuthService);
 
   totalReceita = signal(0);
@@ -27,7 +31,7 @@ export class Painel implements OnInit {
   formularioAberto = signal(false);
   financeiroEditando = signal<DadosDetalhamentoFinanceiro | null>(null); // null = criando
   financeiroSelecionado = signal<DadosDetalhamentoFinanceiro | null>(null); // modal de parcelas
-
+  
   ganhosRecentes = computed(() =>
     this.financeiros()
       .filter((f) => f.tipo === 'RECEITA')
@@ -40,6 +44,13 @@ export class Painel implements OnInit {
       .filter((f) => f.tipo === 'DESPESA')
       .sort((a, b) => b.id - a.id)
       .slice(0, 5),
+  );
+
+  receitaMes = computed(() =>
+    this.financeiros().filter((f) => f.tipo === 'RECEITA').reduce((soma, f) => soma + f.valor, 0),
+  );
+  despesaMes = computed(() =>
+    this.financeiros().filter((f) => f.tipo === 'DESPESA').reduce((soma, f) => soma + f.valor, 0),
   );
 
   primeiroNome = computed(() => {
@@ -57,7 +68,11 @@ export class Painel implements OnInit {
       this.totalDespesa.set(resumo.totalDespesa);
     });
 
-    this.financeiroService.buscarFinanceiro().subscribe((lista) => this.financeiros.set(lista));
+    //this.financeiroService.buscarFinanceiro().subscribe((lista) => this.financeiros.set(lista));
+
+    this.financeiroService
+      .buscarFinanceiroPorMes(this.periodo.mes(), this.periodo.ano())
+      .subscribe((lista) => this.financeiros.set(lista));
   }
 
   // ---------- ações ----------

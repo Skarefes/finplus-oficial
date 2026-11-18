@@ -67,6 +67,11 @@
             <label for="parcelas">Quantidade de parcelas</label>
             <input type="number" name="parcelas" id="parcelas" min="1" [(ngModel)]="quantidadeParcelas" />
           </div>
+          @if (!editando && permiteParcelar && quantidadeParcelas > 1) {
+            <p class="aviso-parcelas campo-completo" role="note">
+              Compra parcelada não pode ser editada depois. Para mudar algo, exclua e cadastre de novo.
+            </p>
+            }
         }
       </div>
 

@@ -12,6 +12,8 @@
     </button>
   </section>
 
+  <app-seletor-mes (mudou)="carregar()" />
+
   <!-- Cards de resumo -->
   <section class="resumo" aria-label="Resumo do saldo">
     <div class="card card-saldo">
@@ -22,7 +24,7 @@
       <h3>
         {{ totalReceita() - totalDespesa() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
       </h3>
-      <small>Ganhos menos gastos</small>
+      <small>Ganhos - gastos</small>
     </div>
 
     <div class="card card-receita">
@@ -30,8 +32,9 @@
         <span>Ganhos</span>
         <span class="icone" aria-hidden="true">↑</span>
       </div>
-      <h3>{{ totalReceita() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
-      <small>Total de ganhos</small>
+      <h3>{{ receitaMes() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+      <small>Ganhos do Mês</small>
+      <small class="geral">Total geral: {{totalReceita() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'}}</small>
     </div>
 
     <div class="card card-despesa">
@@ -39,9 +42,13 @@
         <span>Gastos</span>
         <span class="icone" aria-hidden="true">↓</span>
       </div>
-      <h3>{{ totalDespesa() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
-      <small>Total de gastos</small>
+      <h3>{{ despesaMes() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+      <small>Gastos do Mês</small>
+      <small class="geral">Total geral: {{ totalDespesa() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</small>
     </div>
+
+    <app-card-teto [gastos]="despesaMes()" [compacto]="true" />
+
   </section>
 
   <!-- Últimas transações -->
@@ -70,7 +77,7 @@
               <div class="item-icone receita" aria-hidden="true">↑</div>
               <div class="descricao">
                 <strong>{{ f.nome }}</strong>
-                <small>{{ f.descricao }}</small>
+                <small>{{ f.data }}@if (f.descricao) { · {{ f.descricao }}}</small>
               </div>
             </div>
 
@@ -104,7 +111,7 @@
               <div class="item-icone despesa" aria-hidden="true">↓</div>
               <div class="descricao">
                 <strong>{{ f.nome }}</strong>
-                <small>{{ f.descricao }}</small>
+                <small>{{ f.data }}@if (f.descricao) { · {{ f.descricao }}}</small>
               </div>
             </div>
 

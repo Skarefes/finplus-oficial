@@ -4,6 +4,13 @@ import { FinanceiroService } from '../../services/financeiro.service';
 import { DadosDetalhamentoFinanceiro } from '../../models/dadosdetalhamento-financeiro';
 import { ParcelasModal } from '../../components/parcelas-modal/parcelas-modal';
 import { TransacaoForm } from '../../components/transacao-form/transacao-form';
+import { PeriodoService } from '../../services/periodo.service';
+import { SeletorMes } from '../../components/seletor-mes/seletor-mes';
+import { CardTeto } from '../../components/card-teto/card-teto';
+
+function chaveData(data: string): string {
+  return data.split('/').reverse().join('');
+}
 
 const CATEGORIAS: Record<string, { nome: string; cor: string }> = {
   ALIMENTO: { nome: 'Alimentação', cor: '#198b69' },
@@ -16,25 +23,39 @@ const CATEGORIAS: Record<string, { nome: string; cor: string }> = {
 
 @Component({
   selector: 'app-relatorios',
-  imports: [CurrencyPipe, ParcelasModal, TransacaoForm],
+  imports: [CurrencyPipe, ParcelasModal, TransacaoForm, SeletorMes, CardTeto],
   templateUrl: './relatorios.html',
   styleUrl: './relatorios.css',
 })
+
 export class Relatorios implements OnInit {
   private financeiroService = inject(FinanceiroService);
+  private periodo = inject(PeriodoService)
 
   financeiros = signal<DadosDetalhamentoFinanceiro[]>([]);
   financeiroSelecionado = signal<DadosDetalhamentoFinanceiro | null>(null); // modal de parcelas
   formularioAberto = signal(false);
   financeiroEditando = signal<DadosDetalhamentoFinanceiro | null>(null);    // null = criando
+  //mes e ano estado do filtro, os outros reagem a ele
+  teto = signal<number | null>(null);
+  editandoTeto = signal(false);
+  tetoDigitado: number | null = null; //ligado ao input ngmodel
+  historicoAberto = signal(false);
+  historico = signal<DadosDetalhamentoFinanceiro[]>([]);
+  filtroHistorico = signal<'TODOS' | 'RECEITA' | 'DESPESA'>('TODOS');
+  limiteHistorico = signal(10);
+
 
   ngOnInit(): void {
     this.carregar();
   }
 
   carregar(): void {
-    this.financeiroService.buscarFinanceiro().subscribe((lista) => this.financeiros.set(lista));
+  this.financeiroService
+    .buscarFinanceiroPorMes(this.periodo.mes(), this.periodo.ano())
+    .subscribe((lista) => this.financeiros.set(lista));
   }
+
 
   // mais recentes primeiro
   ganhos = computed(() =>
@@ -96,14 +117,14 @@ export class Relatorios implements OnInit {
 
   aoSalvar() {
     this.fecharFormulario();
-    this.carregar();
+    this.atualizarTela();
   }
 
   excluir(id: number) {
     if (!confirm('Deseja excluir esta transação?')) {
       return;
     }
-    this.financeiroService.excluirFinanceiro(id).subscribe(() => this.carregar());
+    this.financeiroService.excluirFinanceiro(id).subscribe(() => this.atualizarTela());
   }
 
   abrirParcelas(f: DadosDetalhamentoFinanceiro) {
@@ -113,4 +134,49 @@ export class Relatorios implements OnInit {
   fecharParcelas() {
     this.financeiroSelecionado.set(null);
   }
+
+  private atualizarTela(){
+    this.carregar();
+    if(this.historicoAberto()){
+      this.carregarHistorico()
+    }
+  }
+
+  //-------historico -------
+  historicoFiltrado = computed(() => {
+  const filtro = this.filtroHistorico();
+  return this.historico()
+    .filter((f) => filtro === 'TODOS' || f.tipo === filtro)
+    // mais recente primeiro; se a data empatar, desempata pelo id
+    .sort((a, b) => chaveData(b.data).localeCompare(chaveData(a.data)) || b.id - a.id);
+  });
+
+  historicoVisivel = computed(() => this.historicoFiltrado().slice(0, this.limiteHistorico()));
+  restantes = computed(() => this.historicoFiltrado().length - this.historicoVisivel().length);
+
+  alternarHistorico() {
+    this.historicoAberto.update((v) => !v);
+    // só busca na primeira vez que abre; fechado, não custa nada
+    if (this.historicoAberto() && this.historico().length === 0) {
+      this.carregarHistorico();
+    }
+  }
+
+  carregarHistorico() {
+    this.financeiroService.buscarFinanceiro().subscribe((lista) => this.historico.set(lista));
+  }
+
+  filtrar(tipo: 'TODOS' | 'RECEITA' | 'DESPESA') {
+    this.filtroHistorico.set(tipo);
+    this.limiteHistorico.set(10); // volta para a primeira página
+  }
+
+  mostrarMais() {
+    this.limiteHistorico.update((l) => l + 10);
+  }
+
+  nomeCategoria(chave: string) {
+    return CATEGORIAS[chave]?.nome ?? chave;
+  }
+
 }

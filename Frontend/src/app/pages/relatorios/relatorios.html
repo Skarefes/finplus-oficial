@@ -9,6 +9,8 @@
     <button type="button" class="botao-principal" (click)="abrirNovo()">Adicionar transação</button>
   </section>
 
+  <app-seletor-mes (mudou)="carregar()" />
+
   <section class="resumo" aria-label="Totais">
     <div class="card card-saldo">
       <div class="card-cabecalho"><span>Saldo</span><span class="icone" aria-hidden="true">R$</span></div>
@@ -24,8 +26,12 @@
       <div class="card-cabecalho"><span>Gastos</span><span class="icone" aria-hidden="true">↓</span></div>
       <h3>{{ totalDespesa() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
       <small>Total de gastos</small>
+      
     </div>
+
+    <app-card-teto [gastos]="totalDespesa()" />
   </section>
+
 
   <section class="grafico-secao">
     <div class="titulo-secao"><h2>Gastos por categoria</h2></div>
@@ -79,7 +85,7 @@
               <div class="item-icone receita" aria-hidden="true">↑</div>
               <div class="descricao">
                 <strong>{{ f.nome }}</strong>
-                <small>{{ f.descricao }}</small>
+                <small>{{ f.data }}@if (f.descricao) { · {{ f.descricao }}}</small>
               </div>
             </div>
             <div class="item-direita">
@@ -109,7 +115,7 @@
               <div class="item-icone despesa" aria-hidden="true">↓</div>
               <div class="descricao">
                 <strong>{{ f.nome }}</strong>
-                <small>{{ f.descricao }}</small>
+                <small>{{ f.data }}@if (f.descricao) { · {{ f.descricao }}}</small>
               </div>
             </div>
             <div class="item-direita">
@@ -128,6 +134,56 @@
         }
       </div>
     </div>
+  </section>
+
+  <section class="historico">
+    <button type="button" class="botao-secundario historico-botao"
+            (click)="alternarHistorico()" [attr.aria-expanded]="historicoAberto()">
+      {{ historicoAberto() ? 'Ocultar histórico completo' : 'Ver histórico completo' }}
+    </button>
+
+    @if (historicoAberto()) {
+      <div class="historico-corpo">
+        <div class="filtros" role="group" aria-label="Filtrar histórico">
+          <button type="button" [class.ativo]="filtroHistorico() === 'TODOS'" (click)="filtrar('TODOS')">Todos</button>
+          <button type="button" [class.ativo]="filtroHistorico() === 'RECEITA'" (click)="filtrar('RECEITA')">Ganhos</button>
+          <button type="button" [class.ativo]="filtroHistorico() === 'DESPESA'" (click)="filtrar('DESPESA')">Gastos</button>
+        </div>
+
+        <ul class="linhas">
+          @for (f of historicoVisivel(); track f.id) {
+            <li class="linha">
+              <span class="item-icone" [class.receita]="f.tipo === 'RECEITA'" [class.despesa]="f.tipo === 'DESPESA'" aria-hidden="true">
+                {{ f.tipo === 'RECEITA' ? '↑' : '↓' }}
+              </span>
+
+              <div class="linha-info">
+                <strong>{{ f.nome }}</strong>
+                <small>{{ f.data }} · {{ nomeCategoria(f.categoria) }}</small>
+              </div>
+
+              @if ((f.quantidadeParcelas ?? 1) > 1) {
+                <button type="button" class="pill" (click)="abrirParcelas(f)" aria-label="Ver parcelas">
+                  {{ f.quantidadeParcelas }}x
+                </button>
+              }
+
+              <strong class="valor" [class.receita]="f.tipo === 'RECEITA'" [class.despesa]="f.tipo === 'DESPESA'">
+                {{ f.tipo === 'RECEITA' ? '+' : '−' }} {{ f.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+              </strong>
+            </li>
+          } @empty {
+            <li class="vazio">Nenhuma transação.</li>
+          }
+        </ul>
+
+        @if (restantes() > 0) {
+          <button type="button" class="mostrar-mais" (click)="mostrarMais()">
+            Mostrar mais ({{ restantes() }})
+          </button>
+        }
+      </div>
+    }
   </section>
 </main>
 

@@ -1,0 +1,60 @@
+@if (compacto()) {
+    <div class="card card-teto" [class.estourou]="estourou()">
+    <div class="card-cabecalho">
+      <span>Limite do mês</span>
+      <span class="icone" aria-hidden="true">{{ teto() === null ? '–' : estourou() ? '!' : '✓' }}</span>
+    </div>
+
+    @if (teto() !== null) {
+      <h3>{{ teto() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+      @if (estourou()) {
+        <small class="status-curto">Passou {{ diferenca() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</small>
+      } @else {
+        <small class="status-curto">Ainda pode gastar {{ restante() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</small>
+      }
+      <a class="link-acao" routerLink="/relatorios">Editar nos Relatórios →</a>
+    } @else {
+      <h3>Sem limite</h3>
+      <small>Opcional</small>
+      <a class="link-acao" routerLink="/relatorios">Definir nos Relatórios →</a>
+    }
+  </div>
+
+} @else {
+    <div class="card card-teto" [class.estourou]="estourou()">
+        <div class="card-cabecalho">
+            <span>Limite do mês</span>
+            <span class="icone" aria-hidden="true">{{ teto() === null ? '–' : estourou() ? '!' : '✓' }}</span>
+        </div>
+
+        @if (editando()) {
+            <div class="campo edicao">
+            <label for="teto">Quanto você pode gastar por mês (R$)</label>
+            <input id="teto" type="number" min="0" placeholder="Deixe vazio para não ter limite"
+                    [(ngModel)]="tetoDigitado" />
+            </div>
+            <div class="acoes-teto">
+            <button type="button" class="botao-secundario" (click)="editando.set(false)">Cancelar</button>
+            <button type="button" class="botao-principal" (click)="salvar()">Salvar</button>
+            </div>
+        } @else if (teto() !== null) {
+            <h3>{{ teto() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+
+            <div class="barra">
+            <div class="barra-preenchida" [style.width.%]="percentual()"></div>
+            </div>
+
+            @if (estourou()) {
+            <p class="status">Passou {{ diferenca() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} do limite.</p>
+            } @else {
+            <p class="status">Ainda pode gastar {{ restante() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}.</p>
+            }
+
+            <button type="button" class="link-acao" (click)="abrirEdicao()">Editar limite</button>
+        } @else {
+            <h3>Sem limite</h3>
+            <small>Defina quanto pode gastar por mês (opcional).</small>
+            <button type="button" class="botao-secundario definir" (click)="abrirEdicao()">Definir limite</button>
+        }
+    </div>
+}
