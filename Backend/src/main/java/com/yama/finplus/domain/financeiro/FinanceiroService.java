@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,6 +84,16 @@ public class FinanceiroService {
                 .findByIdAndUsuario_Email(id, email).orElseThrow();
 
         financeiroRepository.delete(financeiro);
+    }
+
+
+    public List<DadosDetalhamentoFinanceiro> listarPorMes(int mes, int ano, String email){
+        YearMonth periodoMesAno = YearMonth.of(ano, mes);
+        LocalDateTime inicio = periodoMesAno.atDay(1).atStartOfDay();
+        LocalDateTime fim = periodoMesAno.plusMonths(1).atDay(1).atStartOfDay();
+
+        return financeiroRepository.listarPorPeriodo(email, inicio, fim).stream()
+                .map(DadosDetalhamentoFinanceiro::new).toList();
     }
 
 }

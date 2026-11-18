@@ -17,13 +17,21 @@ public record DadosDetalhamentoFinanceiro(Long id,
                                           LocalDateTime data,
                                           Categoria categoria,
                                           TipoMovimentacao tipo,
-                                          FormaPagamento formaPagamento
+                                          FormaPagamento formaPagamento,
+                                          Integer quantidadeParcelas
 
 ) {
 
     public DadosDetalhamentoFinanceiro(Financeiro financeiro){
         this(financeiro.getId(), financeiro.getNome(), financeiro.getValor(), financeiro.getDescricao(),
                 financeiro.getData(), financeiro.getCategoria(),
-                financeiro.getTipo(), financeiro.getFormaPagamento());
+                financeiro.getTipo(), financeiro.getFormaPagamento(),
+                contarParcelas(financeiro));
+    }
+
+    // logo após o cadastro a lista de parcelas ainda é null nessa instância, então assume 1
+    private static Integer contarParcelas(Financeiro financeiro) {
+        var parcelas = financeiro.getParcelas();
+        return (parcelas == null || parcelas.isEmpty()) ? 1 : parcelas.size();
     }
 }

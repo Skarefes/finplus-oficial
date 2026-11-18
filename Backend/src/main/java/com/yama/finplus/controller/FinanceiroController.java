@@ -78,4 +78,11 @@ public class FinanceiroController {
 
         return ResponseEntity.ok(parcelas);
     }
+
+    @GetMapping("/mensal")
+    public ResponseEntity<List<DadosDetalhamentoFinanceiro>> listarPorMes(@RequestParam int mes, @RequestParam int ano, Authentication authentication){
+        String email = authentication.getName();
+
+        return ResponseEntity.ok(service.listarPorMes(mes, ano, email));
+    }
 }

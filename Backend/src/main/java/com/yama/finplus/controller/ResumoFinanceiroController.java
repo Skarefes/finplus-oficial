@@ -2,11 +2,11 @@ package com.yama.finplus.controller;
 
 import com.yama.finplus.domain.financeiro.DadosResumoFinanceiro;
 import com.yama.finplus.domain.resumo.ResumoFincanceiroService;
+import com.yama.finplus.domain.usuario.DadosTeto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
@@ -35,5 +35,16 @@ public class ResumoFinanceiroController {
 
         var saldoTot = resumoFincanceiroService.calcularSaldoTotal(email);
         return ResponseEntity.ok(saldoTot);
+    }
+
+    // ResumoFinanceiroController.java
+    @GetMapping("/teto")
+    public ResponseEntity<DadosTeto> buscarTeto(Authentication authentication) {
+        return ResponseEntity.ok(resumoFincanceiroService.buscarTeto(authentication.getName()));
+    }
+
+    @PutMapping("/teto")
+    public ResponseEntity<DadosTeto> definirTeto(@RequestBody @Valid DadosTeto dados, Authentication authentication) {
+        return ResponseEntity.ok(resumoFincanceiroService.definirTeto(dados, authentication.getName()));
     }
 }

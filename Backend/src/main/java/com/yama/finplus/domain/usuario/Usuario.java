@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class Usuario {
     private String senha;
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Financeiro> financeiros = new ArrayList<>(); //lista de registros financeiros que pertencem a um usuario
+    @Column(name = "teto_mensal")
+    private BigDecimal tetoMensal;
+
 
     public Usuario(DadosCadastroUsuario dadosCadastroUsuario) {
         this.username = dadosCadastroUsuario.username();
