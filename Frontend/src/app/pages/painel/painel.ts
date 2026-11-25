@@ -11,6 +11,7 @@ import { ParcelasModal } from '../../components/parcelas-modal/parcelas-modal';
 import { SeletorMes } from '../../components/seletor-mes/seletor-mes';
 import { CardTeto } from '../../components/card-teto/card-teto';
 import { PeriodoService } from '../../services/periodo.service';
+import { DadosLancamentoMensal } from '../../models/dados-lancamento-mensal';
 
 @Component({
   selector: 'app-painel',
@@ -26,7 +27,7 @@ export class Painel implements OnInit {
 
   totalReceita = signal(0);
   totalDespesa = signal(0);
-  financeiros = signal<DadosDetalhamentoFinanceiro[]>([]);
+  financeiros = signal<DadosLancamentoMensal[]>([]);
 
   formularioAberto = signal(false);
   financeiroEditando = signal<DadosDetalhamentoFinanceiro | null>(null); // null = criando
@@ -97,14 +98,17 @@ export class Painel implements OnInit {
   }
 
   excluir(id: number) {
-    if (!confirm('Deseja excluir esta transação?')) {
+    if (!confirm('Deseja excluir esta transação? Se for parcelada, todas as parcelas serão excluídas.')) {
       return;
     }
     this.financeiroService.excluirFinanceiro(id).subscribe(() => this.carregar());
   }
 
   abrirParcelas(f: DadosDetalhamentoFinanceiro) {
-    this.financeiroSelecionado.set(f);
+    // no modal, "Total" deve ser a compra inteira, e não só a parcela deste mês.
+    // as linhas do histórico não têm valorTotal, então caem no próprio valor
+    const total = (f as Partial<DadosLancamentoMensal>).valorTotal ?? f.valor;
+    this.financeiroSelecionado.set({ ...f, valor: total });
   }
 
   fecharParcelas() {

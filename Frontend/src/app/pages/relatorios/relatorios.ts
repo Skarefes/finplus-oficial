@@ -7,6 +7,7 @@ import { TransacaoForm } from '../../components/transacao-form/transacao-form';
 import { PeriodoService } from '../../services/periodo.service';
 import { SeletorMes } from '../../components/seletor-mes/seletor-mes';
 import { CardTeto } from '../../components/card-teto/card-teto';
+import { DadosLancamentoMensal } from '../../models/dados-lancamento-mensal';
 
 function chaveData(data: string): string {
   return data.split('/').reverse().join('');
@@ -32,7 +33,7 @@ export class Relatorios implements OnInit {
   private financeiroService = inject(FinanceiroService);
   private periodo = inject(PeriodoService)
 
-  financeiros = signal<DadosDetalhamentoFinanceiro[]>([]);
+  financeiros = signal<DadosLancamentoMensal[]>([]);
   financeiroSelecionado = signal<DadosDetalhamentoFinanceiro | null>(null); // modal de parcelas
   formularioAberto = signal(false);
   financeiroEditando = signal<DadosDetalhamentoFinanceiro | null>(null);    // null = criando
@@ -121,14 +122,17 @@ export class Relatorios implements OnInit {
   }
 
   excluir(id: number) {
-    if (!confirm('Deseja excluir esta transação?')) {
+    if (!confirm('Deseja excluir esta transação? Se for parcelada, todas as parcelas serão excluídas.')) {
       return;
     }
     this.financeiroService.excluirFinanceiro(id).subscribe(() => this.atualizarTela());
   }
 
   abrirParcelas(f: DadosDetalhamentoFinanceiro) {
-    this.financeiroSelecionado.set(f);
+    // no modal, "Total" deve ser a compra inteira, e não só a parcela deste mês.
+    // as linhas do histórico não têm valorTotal, então caem no próprio valor
+    const total = (f as Partial<DadosLancamentoMensal>).valorTotal ?? f.valor;
+    this.financeiroSelecionado.set({ ...f, valor: total });
   }
 
   fecharParcelas() {

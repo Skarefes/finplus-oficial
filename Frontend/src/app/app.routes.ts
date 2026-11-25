@@ -4,15 +4,17 @@ import { Painel } from './pages/painel/painel';
 import { Configuracoes } from './pages/configuracoes/configuracoes'; 
 import { Relatorios } from './pages/relatorios/relatorios';
 import { authGuard } from './guards/auth-guard';
+import { Fixos } from './pages/fixos/fixos';
 
 export const routes: Routes = [
 
     { path: 'login', component: Login }, 
     { path: '', component: Painel, canActivate: [authGuard] }, 
     { path: 'relatorios', component: Relatorios, canActivate: [authGuard] },
+    { path: 'fixos', component: Fixos, canActivate: [authGuard]},
     { path: 'configuracoes', component: Configuracoes, canActivate: [authGuard] },
-    { path: '**', redirectTo: '' }
-
+    { path: '**', redirectTo: '' },
+    
 
     //{
         //path: 'login',

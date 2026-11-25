@@ -15,17 +15,17 @@
     <div class="card card-saldo">
       <div class="card-cabecalho"><span>Saldo</span><span class="icone" aria-hidden="true">R$</span></div>
       <h3>{{ saldo() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
-      <small>Ganhos menos gastos</small>
+      <small>Ganhos - gastos</small>
     </div>
     <div class="card card-receita">
       <div class="card-cabecalho"><span>Ganhos</span><span class="icone" aria-hidden="true">↑</span></div>
       <h3>{{ totalReceita() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
-      <small>Total de ganhos</small>
+      <small>Total de ganhos mês</small>
     </div>
     <div class="card card-despesa">
       <div class="card-cabecalho"><span>Gastos</span><span class="icone" aria-hidden="true">↓</span></div>
       <h3>{{ totalDespesa() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
-      <small>Total de gastos</small>
+      <small>Total de gastos mês</small>
       
     </div>
 
@@ -85,7 +85,8 @@
               <div class="item-icone receita" aria-hidden="true">↑</div>
               <div class="descricao">
                 <strong>{{ f.nome }}</strong>
-                <small>{{ f.data }}@if (f.descricao) { · {{ f.descricao }}}</small>
+                <!--<small>{{ f.data }}@if (f.descricao) { · {{ f.descricao }}}</small>-->
+                <small>{{ f.data }}@if ((f.quantidadeParcelas ?? 1) > 1) { · parcela {{ f.numeroParcela }}/{{ f.quantidadeParcelas }}}@if (f.fixo) { · fixo}@if (f.descricao) { · {{ f.descricao }}}</small>
               </div>
             </div>
             <div class="item-direita">
@@ -115,7 +116,8 @@
               <div class="item-icone despesa" aria-hidden="true">↓</div>
               <div class="descricao">
                 <strong>{{ f.nome }}</strong>
-                <small>{{ f.data }}@if (f.descricao) { · {{ f.descricao }}}</small>
+                <!--<small>{{ f.data }}@if (f.descricao) { · {{ f.descricao }}}</small>-->
+                <small>{{ f.data }}@if ((f.quantidadeParcelas ?? 1) > 1) { · parcela {{ f.numeroParcela }}/{{ f.quantidadeParcelas }}}@if (f.fixo) { · fixo}@if (f.descricao) { · {{ f.descricao }}}</small>
               </div>
             </div>
             <div class="item-direita">

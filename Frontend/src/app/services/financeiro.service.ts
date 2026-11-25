@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { DadosCadastroFinanceiro } from '../models/dadoscadastro-financeiro';
 import { DadosDetalhamentoFinanceiro } from '../models/dadosdetalhamento-financeiro';
 import { environment } from '../../environments/environment';
+import { DadosLancamentoMensal } from '../models/dados-lancamento-mensal';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,7 @@ export class FinanceiroService {
   }
 
   buscarFinanceiroPorMes(mes: number, ano: number) {
-    return this.http.get<DadosDetalhamentoFinanceiro[]>(
+    return this.http.get<DadosLancamentoMensal[]>(
       `${this.apiUrl}/mensal`,
       { params: { mes, ano } },
     );

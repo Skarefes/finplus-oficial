@@ -1,0 +1,102 @@
+/* fixos.css */
+:host {
+  display: block;
+}
+
+.boas-vindas .botao-principal {
+  width: 100%;
+}
+
+/* a linha quebra: [nome + valor] em cima e a barra ocupando a largura toda embaixo */
+.fixo-item {
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+.fixo-barra {
+  flex: 0 0 100%;
+}
+
+.barra {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5eaec;
+}
+
+.barra-preenchida {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--verde);
+  transition: width 0.3s ease;
+}
+
+.barra-preenchida.receita { background: var(--verde); }
+.barra-preenchida.despesa { background: var(--coral); }
+
+.comprometido {
+  margin-bottom: 28px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+}
+
+.comprometido-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.comprometido-topo strong { color: var(--navy); font-size: 1.1rem; }
+
+.comprometido p {
+  margin: 10px 0 0;
+  color: var(--verde);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* passou da renda: barra e texto ficam coral */
+.comprometido.estourou .barra-preenchida { background: var(--coral); }
+.comprometido.estourou p { color: var(--coral); }
+
+/* formulário */
+.campos-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.aviso-fixo {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.acoes {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.erro {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--coral-suave);
+  color: var(--coral);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+@media (min-width: 640px) {
+  .boas-vindas .botao-principal { width: auto; }
+  .campos-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .campo-completo { grid-column: 1 / -1; }
+  .acoes { flex-direction: row; justify-content: flex-end; }
+}

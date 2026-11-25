@@ -1,0 +1,181 @@
+<main>
+  <section class="boas-vindas">
+    <div class="boas-vindas-texto">
+      <span class="subtitulo">Fixos</span>
+      <h1>O que se repete todo mês</h1>
+      <p>Salário, aluguel, contas e assinaturas entram sozinhos em cada mês novo.</p>
+    </div>
+    <button type="button" class="botao-principal" (click)="abrirNovo()">Adicionar fixo</button>
+  </section>
+
+  <section class="resumo" aria-label="Resumo dos fixos">
+    <div class="card card-saldo">
+      <div class="card-cabecalho"><span>Sobra por mês</span><span class="icone" aria-hidden="true">R$</span></div>
+      <h3>{{ sobra() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+      <small>Ganhos fixos menos gastos fixos</small>
+    </div>
+    <div class="card card-receita">
+      <div class="card-cabecalho"><span>Ganhos fixos</span><span class="icone" aria-hidden="true">↑</span></div>
+      <h3>{{ totalGanhos() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+      <small>Todo mês</small>
+    </div>
+    <div class="card card-despesa">
+      <div class="card-cabecalho"><span>Gastos fixos</span><span class="icone" aria-hidden="true">↓</span></div>
+      <h3>{{ totalGastos() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+      <small>Todo mês</small>
+    </div>
+  </section>
+
+  <section class="comprometido" [class.estourou]="sobra() < 0" aria-label="Renda fixa comprometida">
+    <div class="comprometido-topo">
+      <span>Renda fixa comprometida</span>
+      <strong>{{ totalGanhos() > 0 ? comprometido().toFixed(0) + '%' : '—' }}</strong>
+    </div>
+    <div class="barra">
+      <div class="barra-preenchida" [style.width.%]="comprometidoBarra()"></div>
+    </div>
+    <p>
+      @if (totalGanhos() === 0) {
+        Cadastre seu salário como ganho fixo para ver quanto da renda já está comprometida.
+      } @else if (sobra() >= 0) {
+        Depois dos gastos fixos, sobram {{ sobra() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} por mês.
+      } @else {
+        Os gastos fixos passam {{ -sobra() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} da renda fixa.
+      }
+    </p>
+  </section>
+
+  <section class="movimentacoes">
+    <div class="listas">
+      <!-- Ganhos fixos -->
+      <div class="bloco">
+        <div class="bloco-titulo">
+          <div class="titulo-tipo receita"><span aria-hidden="true">↑</span><h3>Ganhos fixos</h3></div>
+        </div>
+
+        @for (f of ganhos(); track f.id) {
+          <div class="item fixo-item">
+            <div class="item-info">
+              <div class="item-icone receita" aria-hidden="true">↑</div>
+              <div class="descricao">
+                <strong>{{ f.nome }}</strong>
+                <small>Todo dia {{ f.diaDoMes }} · {{ nomeCategoria(f.categoria) }}</small>
+              </div>
+            </div>
+            <div class="item-direita">
+              <strong class="valor receita">{{ f.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+              <div class="item-acoes">
+                <button type="button" (click)="abrirEdicao(f)">Editar</button>
+                <button type="button" class="perigo" (click)="excluir(f)">Excluir</button>
+              </div>
+            </div>
+            <div class="barra fixo-barra">
+              <div class="barra-preenchida receita" [style.width.%]="largura(f.valor)"></div>
+            </div>
+          </div>
+        } @empty {
+          <p class="vazio">Nenhum ganho fixo ainda. Cadastre seu salário.</p>
+        }
+      </div>
+
+      <!-- Gastos fixos -->
+      <div class="bloco">
+        <div class="bloco-titulo">
+          <div class="titulo-tipo despesa"><span aria-hidden="true">↓</span><h3>Gastos fixos</h3></div>
+        </div>
+
+        @for (f of gastos(); track f.id) {
+          <div class="item fixo-item">
+            <div class="item-info">
+              <div class="item-icone despesa" aria-hidden="true">↓</div>
+              <div class="descricao">
+                <strong>{{ f.nome }}</strong>
+                <small>Todo dia {{ f.diaDoMes }} · {{ nomeCategoria(f.categoria) }}</small>
+              </div>
+            </div>
+            <div class="item-direita">
+              <strong class="valor despesa">{{ f.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+              <div class="item-acoes">
+                <button type="button" (click)="abrirEdicao(f)">Editar</button>
+                <button type="button" class="perigo" (click)="excluir(f)">Excluir</button>
+              </div>
+            </div>
+            <div class="barra fixo-barra">
+              <div class="barra-preenchida despesa" [style.width.%]="largura(f.valor)"></div>
+            </div>
+          </div>
+        } @empty {
+          <p class="vazio">Nenhum gasto fixo ainda.</p>
+        }
+      </div>
+    </div>
+  </section>
+</main>
+
+@if (formularioAberto()) {
+  <div class="modal-fundo" (click)="fecharFormulario()">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="fixo-titulo"
+             (click)="$event.stopPropagation()">
+      <div class="modal-topo">
+        <div>
+          <span class="subtitulo">{{ editandoId() !== null ? 'Editar' : 'Novo fixo' }}</span>
+          <h2 id="fixo-titulo">{{ editandoId() !== null ? 'Editar fixo' : 'Adicionar fixo' }}</h2>
+        </div>
+        <button type="button" class="botao-fechar" aria-label="Fechar" (click)="fecharFormulario()">✕</button>
+      </div>
+
+      <form (ngSubmit)="salvar()">
+        <div class="campos-grid">
+          <div class="campo campo-completo">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" placeholder="Ex: Aluguel" [(ngModel)]="nome" />
+          </div>
+
+          <div class="campo">
+            <label for="valor">Valor (R$)</label>
+            <input type="number" id="valor" name="valor" placeholder="0,00" [(ngModel)]="valor" />
+          </div>
+
+          <div class="campo">
+            <label for="dia">Dia do mês</label>
+            <input type="number" id="dia" name="dia" min="1" max="28" [(ngModel)]="diaDoMes" />
+          </div>
+
+          <div class="campo">
+            <label for="tipo">Tipo</label>
+            <select id="tipo" name="tipo" [(ngModel)]="tipo">
+              <option value="RECEITA">Ganho</option>
+              <option value="DESPESA">Gasto</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="categoria">Categoria</label>
+            <select id="categoria" name="categoria" [(ngModel)]="categoria">
+              <option value="ALIMENTO">Alimentação</option>
+              <option value="TRANSPORTE">Transporte</option>
+              <option value="LAZER">Lazer</option>
+              <option value="SAUDE">Saúde</option>
+              <option value="OBJETO">Objeto</option>
+              <option value="OUTROS">Outros</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="aviso-fixo">Alterações valem para este mês e os próximos. Meses anteriores não mudam.</p>
+
+        @if (erro()) {
+          <p class="erro" role="alert">{{ erro() }}</p>
+        }
+
+        <div class="acoes">
+          <button type="button" class="botao-secundario" (click)="fecharFormulario()">Cancelar</button>
+          <button type="submit" class="botao-principal"
+                  [disabled]="salvando() || !nome || valor <= 0 || diaDoMes < 1 || diaDoMes > 28">
+            {{ salvando() ? 'Salvando...' : 'Salvar' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
