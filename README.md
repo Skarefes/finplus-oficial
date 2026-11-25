@@ -48,16 +48,18 @@ Este projeto está sendo desenvolvido para estudos, uso pessoal, prática de des
 ✔ Dashboard financeiro
 ✔ Integração entre frontend e backend
 ✔ Exibir valor total da compra
+✔ Adicionar parcelamento de compras
+✔ Criar visão mensal das despesas
+✔ Criar visão da dívida total em aberto
+✔ Alterar Senha
 
 ## Futuras Implementações
 - Relatórios
 - Documentação
 - Adicionar entidade Cartão
-- Adicionar parcelamento de compras
 - Exibir valor restante a pagar
 - Controlar parcelas pagas e pendentes
 - Adicionar dia de fechamento do cartão
 - Adicionar dia de vencimento do cartão
 - Calcular automaticamente a fatura correta
-- Criar visão mensal das despesas
-- Criar visão da dívida total em aberto
+- Adicionar segurança de 2 fatores
