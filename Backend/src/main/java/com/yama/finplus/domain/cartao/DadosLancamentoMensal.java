@@ -1,7 +1,6 @@
-package com.yama.finplus.domain.financeiro.fixos;
+package com.yama.finplus.domain.cartao;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.yama.finplus.domain.cartao.Parcela;
 import com.yama.finplus.domain.financeiro.enums.Categoria;
 import com.yama.finplus.domain.financeiro.enums.FormaPagamento;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;

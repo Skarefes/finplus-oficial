@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "parcelas")
@@ -21,6 +22,8 @@ public class Parcela {
     private Integer numeroParcela;
     private Integer totalParcelas;
     private BigDecimal valorParcela;
+    @Column(nullable = false) // mes em que a parcela aparece ( dia 1 de cada mes por enqunato), nao data de vencimento
+    private LocalDate competencia;
     @Enumerated(EnumType.STRING)
     private StatusPagamento statusPagamento;
     @ManyToOne
@@ -30,10 +33,12 @@ public class Parcela {
     public Parcela(Financeiro financeiro,
                    Integer numeroParcela,
                    Integer totalParcelas,
-                   BigDecimal valorParcela) {
+                   BigDecimal valorParcela,
+                   LocalDate competencia) {
         this.financeiro = financeiro;
         this.numeroParcela = numeroParcela;
         this.totalParcelas = totalParcelas;
         this.valorParcela = valorParcela;
+        this.competencia = competencia;
     }
 }

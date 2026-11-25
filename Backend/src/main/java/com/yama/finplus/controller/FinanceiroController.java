@@ -1,6 +1,7 @@
 package com.yama.finplus.controller;
 
 import com.yama.finplus.domain.cartao.DadosDetalhamentoParcela;
+import com.yama.finplus.domain.cartao.DadosLancamentoMensal;
 import com.yama.finplus.domain.cartao.ParcelaService;
 import com.yama.finplus.domain.financeiro.DadosAtualizacaoFinanceiro;
 import com.yama.finplus.domain.financeiro.DadosCadastroFinanceiro;
@@ -80,7 +81,8 @@ public class FinanceiroController {
     }
 
     @GetMapping("/mensal")
-    public ResponseEntity<List<DadosDetalhamentoFinanceiro>> listarPorMes(@RequestParam int mes, @RequestParam int ano, Authentication authentication){
+    public ResponseEntity<List<DadosLancamentoMensal>> listarPorMes(@RequestParam int mes,
+                                                                    @RequestParam int ano, Authentication authentication){
         String email = authentication.getName();
 
         return ResponseEntity.ok(service.listarPorMes(mes, ano, email));

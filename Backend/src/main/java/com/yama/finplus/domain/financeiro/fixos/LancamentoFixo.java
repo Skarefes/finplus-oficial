@@ -1,4 +1,4 @@
-package com.yama.finplus.domain.financeiro;
+package com.yama.finplus.domain.financeiro.fixos;
 
 import com.yama.finplus.domain.financeiro.enums.Categoria;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;

@@ -1,5 +1,6 @@
 package com.yama.finplus.infra.exceptions;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -40,5 +41,10 @@ public class TratadorDeErros {
     public ResponseEntity<String> credenciaisInvalidas() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou senha inválido");
 
+    }
+
+    @ExceptionHandler(TransacaoParceladaExpcetion.class)
+    public ResponseEntity<String> tratarTransacaoParcelada(TransacaoParceladaExpcetion ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

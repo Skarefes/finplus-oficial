@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,8 @@ public class ParcelaService {
                 valorAtual = financeiro.getValor().subtract(valorDistribuido);
             }
 
-            Parcela parcela = new Parcela(financeiro, i, quantidade, valorAtual);
+            LocalDate primeiroMes = financeiro.getData().toLocalDate().withDayOfMonth(1);
+            Parcela parcela = new Parcela(financeiro, i, quantidade, valorAtual, primeiroMes.plusMonths(i - 1));
             parcelas.add(parcela);
 
             valorDistribuido = valorDistribuido.add(valorAtual);

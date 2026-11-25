@@ -2,12 +2,14 @@ package com.yama.finplus.repository;
 
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
 import com.yama.finplus.domain.financeiro.Financeiro;
+import com.yama.finplus.domain.financeiro.fixos.LancamentoFixo;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -45,5 +47,9 @@ public interface FinanceiroRepository extends JpaRepository<Financeiro, Long> {
     """)
     List<Financeiro> listarPorPeriodo(@Param("email") String email,
                                       @Param("inicio") LocalDateTime inicio,
-                                      @Param("fim") LocalDateTime fim);
+                                      @Param("fim") LocalDateTime fim
+    );
+
+    List<Financeiro> findAllByFixoAndCompetenciaFixoGreaterThanEqual(LancamentoFixo fixo, LocalDate mes
+    );
 }

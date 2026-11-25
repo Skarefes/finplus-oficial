@@ -6,15 +6,15 @@ import com.yama.finplus.domain.cartao.Parcela;
 import com.yama.finplus.domain.financeiro.enums.Categoria;
 import com.yama.finplus.domain.financeiro.enums.FormaPagamento;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
+import com.yama.finplus.domain.financeiro.fixos.LancamentoFixo;
 import com.yama.finplus.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,6 +44,11 @@ public class Financeiro {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id", nullable = false) // o usuario nao pode ter id nullo
     private Usuario usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fixo_id")
+    private LancamentoFixo fixo;
+    @Column(name = "competencia_fixo")
+    private LocalDate competenciaFixo;
 
     public Financeiro() {}
 

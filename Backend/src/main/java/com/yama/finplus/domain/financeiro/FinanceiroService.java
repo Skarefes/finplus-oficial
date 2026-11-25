@@ -1,10 +1,15 @@
 package com.yama.finplus.domain.financeiro;
 
+import com.yama.finplus.domain.cartao.DadosLancamentoMensal;
+import com.yama.finplus.domain.cartao.Parcela;
 import com.yama.finplus.domain.cartao.ParcelaService;
 import com.yama.finplus.domain.financeiro.enums.TipoMovimentacao;
+import com.yama.finplus.domain.financeiro.fixos.FixoService;
 import com.yama.finplus.domain.usuario.Usuario;
 import com.yama.finplus.infra.exceptions.FormaPagamentoNaoAutorizadaException;
+import com.yama.finplus.infra.exceptions.TransacaoParceladaExpcetion;
 import com.yama.finplus.repository.FinanceiroRepository;
+import com.yama.finplus.repository.ParcelaRepository;
 import com.yama.finplus.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,11 +27,15 @@ public class FinanceiroService {
     private final FinanceiroRepository financeiroRepository;
     private final ParcelaService parcelaService;
     private final UsuarioRepository usuarioRepository;
+    private final FixoService fixoService;
+    private final ParcelaRepository parcelaRepository;
 
-    public FinanceiroService(FinanceiroRepository financeiroRepository, ParcelaService parcelaService, UsuarioRepository usuarioRepository) {
+    public FinanceiroService(FinanceiroRepository financeiroRepository, ParcelaService parcelaService, UsuarioRepository usuarioRepository, FixoService fixoService, ParcelaRepository parcelaRepository) {
         this.financeiroRepository = financeiroRepository;
         this.parcelaService = parcelaService;
         this.usuarioRepository = usuarioRepository;
+        this.fixoService = fixoService;
+        this.parcelaRepository = parcelaRepository;
     }
 
     //Funcao para colocar as transicoes de gastos e ganhos
@@ -67,15 +76,15 @@ public class FinanceiroService {
                 .map(DadosDetalhamentoFinanceiro::new).toList();
     }
 
-    @Transactional
+    //@Transactional
     //Funcao para editar um item
-    public DadosDetalhamentoFinanceiro editarDados(Long id, DadosAtualizacaoFinanceiro dados, String email) {
-        //identificador fincaneiro ele pega o repository do Financeiro que ja e o objeto pra poder editar
-        var identificadorFinanceiro = financeiroRepository.findByIdAndUsuario_Email(id, email).orElseThrow();
-        identificadorFinanceiro.atualizarDados(dados);
+    //public DadosDetalhamentoFinanceiro editarDados(Long id, DadosAtualizacaoFinanceiro dados, String email) {
+       //identificador fincaneiro ele pega o repository do Financeiro que ja e o objeto pra poder editar
+        //var identificadorFinanceiro = financeiroRepository.findByIdAndUsuario_Email(id, email).orElseThrow();
+       // identificadorFinanceiro.atualizarDados(dados);
         //retorna um novo DTO com os novos dados
-        return new DadosDetalhamentoFinanceiro(identificadorFinanceiro);
-    }
+       // return new DadosDetalhamentoFinanceiro(identificadorFinanceiro);
+    //}
 
     //Funcao que deleta um item
     @Transactional
@@ -87,13 +96,31 @@ public class FinanceiroService {
     }
 
 
-    public List<DadosDetalhamentoFinanceiro> listarPorMes(int mes, int ano, String email){
+    // o mes agora é montado pelas parcelas
+    @Transactional
+    public List<DadosLancamentoMensal> listarPorMes(int mes, int ano, String email){
         YearMonth periodoMesAno = YearMonth.of(ano, mes);
-        LocalDateTime inicio = periodoMesAno.atDay(1).atStartOfDay();
-        LocalDateTime fim = periodoMesAno.plusMonths(1).atDay(1).atStartOfDay();
+        fixoService.garantirMes(email, periodoMesAno);
 
-        return financeiroRepository.listarPorPeriodo(email, inicio, fim).stream()
-                .map(DadosDetalhamentoFinanceiro::new).toList();
+        return parcelaRepository.listarPorCompetencia(email, periodoMesAno.atDay(1)).stream()
+                .map(DadosLancamentoMensal::new).toList();
     }
 
+    @Transactional
+    public DadosDetalhamentoFinanceiro editarDados(Long id, DadosAtualizacaoFinanceiro dados, String email) {
+        var identificadorFinanceiro = financeiroRepository.findByIdAndUsuario_Email(id, email).orElseThrow();
+
+        if (identificadorFinanceiro.getParcelas().size() > 1) {
+            throw new TransacaoParceladaExpcetion("Compra parcelada não pode ser editada. Exclua e cadastre novamente.");
+        }
+
+        identificadorFinanceiro.atualizarDados(dados);
+
+        // a lista do mês agora lê da PARCELA, então a única parcela acompanha valor e data
+        for (Parcela p : identificadorFinanceiro.getParcelas()) {
+            p.setValorParcela(identificadorFinanceiro.getValor());
+            p.setCompetencia(identificadorFinanceiro.getData().toLocalDate().withDayOfMonth(1));
+        }
+        return new DadosDetalhamentoFinanceiro(identificadorFinanceiro);
+    }
 }
